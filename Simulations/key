@@ -1,0 +1,175 @@
+Notes on UCNtransport Code:
+
+Options/Format for 'regions':
+  [NB: Coordinate system oriented so that z => Horizontal Main Beam Direction and y=> Upward Vertical Direction]
+  [NB: Terminate file with a line containing only '/'. Place no empty lines between entries.]
+  
+  Reg#: This is simply the unique number for the particular region defined. The first region should be called 0. Particles will be created in the cut-plane
+        associated with this region if one calls poof(0,#,#). However, a particle generation plane may be defined in any region by calling poof(reg#,#,#). (The
+        location of the particle generation plane in the region is the second argument-- see the function definition for more details. Also note that if you select an
+        isotropic initial distribution you must specify some small offset from the region's cut-plane.) Regions that connect end-to-end using the '*' basepoint signal
+        (see below) must always have sequential region numbers.
+  
+  RType: The type of region being defined
+           1 => Box
+           2 => Cylinder
+         Note that while two connected cylinder-regions may have differing orientations, two connected box-regions as well as a connection between a box- and cylinder-
+         region should NOT have different orientations. (An ERROR message will be output to the console, but the geometry will still be run.) Also, there is no error-
+         trapping for attempting to connect same-type regions with different sizes and the same orientation. The program automatically handles box-cylinder and
+         cylinder-box connections by assuming a lip whose material properties are associated with the region on whose cut-plane the lip exists, but for same-type
+         connections with different sizes special handling code 5 must be utilized for the cut-plane separating the regions.
+  
+  BP(x,y,z): The coordinate of the center of the region's cut-plane. (A region's cut-plane is always defined at its upstream side.)
+             An entry of '*' should be used for regions which are connected to the (downstream) end (i.e. opposite side from cut-plane) of the previous region.
+             When defining a geometry that includes T's, define a set of regions that form a contiguous path from region zero to an end region using * entries, then
+             explicitly specify a new basepoint and define another contiguous path using * entries. Continue until all contiguous sections are defined. Then, to
+             indicate the interconnections (besides using a correct 'connex' file) do the following:
+                  1) For each set of contiguous regions which ENDS in the side of another region, replace the '*' for the last region's basepoint with a '<'.
+                     This indicates that that region terminates in the side of some other part of the geometry.
+                  2) For a set of contiguous regions which BEGINS in the side of some region, place a '>' in front (no space) of the entered basepoint.
+                     This indicates that the basepoint is the beginning of a new set of contiguous regions which starts in the side of some other part of the geometry.
+             NB1: The program uses a box-region's y-dim to calculate the basepoint offset when a box-region is T'ed into a cylinder region, which should be kept in
+             mind when defining the orientation of box regions in such circumstances!
+             NB2: Region 0 should always be given a base point.
+  
+  Dim[m]: For a box this should 'xlength,ylength,zlength'
+          For a cylinder this should be 'diameter,length', where 'length' is the distance from the centers of the region's cut-planes.
+          All distances should be in meters.
+  
+  Orient: This specifies the three angles which define the orientation of a region. The format is 'psi,theta,phi' where the rotations are as follows:
+                  1) Rotation around global y-axis through psi. (The global y-axis points up.)
+                  2) Rotation through theta around the direction of the global x-axis rotated as in 1).
+                  3) Rotation through phi around the direction of the global z-axis rotated as in 1).
+          The angles should be in DEGREES. Note that the rotations are carried out in the order specified.
+          
+          Physically, psi allows you to change the orientation of a region in a plane parallel to the floor. Theta allows the beam direction to be aimed up towards
+          the ceiling or down towards the floor. Psi then allows for rotations of the resulting geometry about the horizontal beam axis (i.e. +z-direction after the
+          psi rotation but before the theta rotation). Note that the signs of the angles are via the RHR so that, for example, a positive theta will aim the +z-axis
+          towards the floor. Also note that if a region with a non-zero phi orientation is connected to a straight section (i.e. a region with theta equal to zero),
+          the straight section should be given the phi orientation of the previous region. (Subsequent straight sections may then have phi equal to zero.)
+  
+  Grad B: This specifies (constant) magnetic field gradients in a region of non-zero LONGITUDINAL (only) magnetic field. The format is: dB/dx,dB/dy,dB/dz
+          where the directions (x,y,z) are such that they would coincide with the global coordinate system if the region orientation were psi=0/theta=0/phi=0 (i.e.
+          the magnetic field gradients are to be defined relative to the region with z representing the longitudinal direction).
+          Units should be [T/m].
+
+          Note that gravity is automatically included in the -y (global) direction.
+
+  Spec: The specularity for the inner surface of the region.
+  
+  Loss: Value of the loss-per-bounce probability for the inner surface of the region or, depending on loss model, the imaginary component of the Fermi potential.
+  
+  Depol: Value of the depolarization probability for the inner surface of the region.
+  
+  WPot[neV]: Value of the Fermi potential for the surface of the region (i.e. the walls), which should be in neV.
+  
+  BPot[neV]: Value of the Fermi potential for any bulk medium in the region, which should be in neV. Note that for scattering off the surface of a medium, the values
+             (i.e. spec, SM, LM, losspb, DM, surf/scat, depol) for that region are used.
+  
+  Surf/Scat: Allows the specification of a surface parameter (e.g. a coating thickness, roughness parameter, or correlation length) OR the input of a mean free path
+             (in meters) for the case of scattering in a bulk medium.
+  
+  Absorb: The probability of absorption due to interaction with a medium is calculated as 1 - exp(-a*T) where T is the total time for the particle's trajectory in the
+          medium and a is an attenuation parameter (in units of 1/s) which is usually calculated as:
+                                                      (cross section*v [m^3/s])*(particle number density [particles/m^3]).
+  
+  Det: Indicates a region which corresponds to a detector:
+       0 => Not a detector region
+       nonzero# => The region corresponds to detector number nonzero#
+     
+  PM: Indicates which propagation mode to use:
+      0 => Medium has a Fermi potential as specified in BPot.
+      1 => Absorbing Medium... used for absorption in detectors and deuterium.
+      2 => Propagation through a foil... uses Golub's transmission formula which includes reflections from inner surfaces. NB: For thin foils the Fermi potential
+           for the foil is the potential specified in BPot, of course, but it is assumed that there is vacuum on either side of the foil.
+      3 => Bulk Medium which scatters particles... scattering is assumed elastic and isotropic with a mean free path defined in 'Surf/Scat'.
+      4 => Bulk Medium with scattering and absorption.
+      5 => Trajectory tracking for this one specific region is turned on.
+
+  SM: Indicates which scattering model to use in the region:
+      0 => Specified probability of specular bounce, diffuse reflection (cos-weighted isotropic) for non-specular bounce.
+      1 => Probability of a non-specular bounce is (1-spec) weighted by the cos of the angle between the incident velocity and local normal.
+           Outgoing distribution after a non-specular bounce is cos-squared weighted isotropic for the polar angle and random for the azimuthal angle.
+      2 => TBD
+
+  LM: Indicates which model to use in determining whether a particle is lost during a wall collision:
+      0 => Specified probability of wall loss, no energy dependence.
+      1 => Energy dependent loss-per-bounce (see p. 25 in Golub UCN book).
+      2 => Energy and angle dependent wall loss using an imaginary wall potential and the Morozov formula (value of the imaginary potential to be specified insead
+           of loss-per-bounce probability).
+
+  DM: Indicates which model to use in determining whether a particle is depolarized during a wall collision:
+      0 => Specified probability of depolarization.
+      1 => TBD
+
+
+Format for 'connex':
+  In each line the first entry is a region number and subsequent entries are the region numbers to which it is connected.
+  
+  The connection list must be entered in such a way that the FIRST connection indicated for a region is the connection through the current region's
+  cut-plane. Region 0 (the starting region) is an exception since there is no region connected to it through its cut-plane-- the first entry in region 0's connection
+  list should be 0. (Note that a special-handling instruction must always be given indicating how Region 0's cut-plane should be treated.)
+  
+  Place an '/' in the first empty connection column.
+    
+  For each region specify ALL connections. For three guides connected end-to-end, for example, the 'connex' file would be:                                      0,1 0 1 /
+                                                                   1 0 2 /
+                                                                   2 1 /
+  
+  If a cut-plane requires special handling (e.g. part of it needs to be a reflective surface or there is a spin-flip resonance there), put a comma immediately (no
+  spaces) after the cut-plane's region number in the first column of the 'connex' file followed by a (no spaces) special handling instruction identifier number.
+  For example:        2,#  1  3  /
+  would indicate that the cut-plane ASSOCIATED WITH REGION 2 (and which sits between region 2 and region 1) needs to be handled specially.
+  
+  Pre-programmed special handling codes are:
+                                             1 => Cut-plane is 100% absorptive
+                                             2 => Cut-plane has a probability of elastic scattering into 2pi specified by a number (0-1) placed in parenthesis after the code.
+                                                  For example, '5,2(.38) 6' would set a scattering probability of 38% to region 5's cut-plane
+                                             3 => Cut-plane represents a spin-flip resonance. Spin-flip efficiencies are defined in the handling routine.
+                                             4 => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
+                                             5 => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
+                                                  The lip is taken to have the same material properties as the cut-plane's region.
+
+Batch Mode:
+  Batch mode is turned on with a flag in the header and allows any number of batches to be run with each batch containing any number of simulation runs. A specified
+  set of geometry files is read in at the beginning of each batch mode so that geometry changes may be implemented at the batch level. Each simulation run in a batch
+  allows one physics parameter to be changed. *Note that the changed parameter in returned to the original value before the next simulation runs. The physics parameter
+  to be changed is specified by one of the following (case-sensitive) codes:
+                                gradBx / gradBy / gradBz / spec / loss / depol / wpot / bpot / scat / abs / PM / SM / LM / DM
+  In batch mode an additional output file is created for each batch which contains the integrated counts in each real detector for each simulation in the batch. The
+  format for a batch file is as follows:
+
+    
+Number of BATCHES to run:
+2
+
+--------------------------------------------------
+Number of simulations this batch:
+1
+
+Geometry files this batch (regions connex):
+regionsck connexck
+
+Integrated counts filename for this batch:
+counts1.sim
+
+start region  |  end region  |  events filename  |  detectors filename  |  parameter name  |  parameter value
+     2               4           events1_1.sim       detectors1_1.sim          spec               0.5
+---------------------------------------------------
+Number of simulations this batch:
+2
+
+Geometry files this batch (regions connex):
+regionsck connexck
+
+Integrated counts filename for this batch:
+counts2.sim
+
+start region  |  end region  |  events filename  |  detectors filename  |  parameter name  |  parameter value
+     3               4           events2_1.sim       detectors2_1.sim          spec               0.8
+     1               1           events2_2.sim       detectors2_2.sim          spec               1.0
+----------------------------------------------------
+
+
+  where the '--------------' lines must be present to separate batches, but the number of '-''s is not important, the 'integrated counts filename', 'events filename',
+  and 'detectors filename' can be anything you wish, and 'parameter name' should be one of the code names above.

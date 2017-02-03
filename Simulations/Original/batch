@@ -1,0 +1,26 @@
+Number of BATCHES to run:
+1
+
+---------------------------------------------------
+Number of simulations this batch:
+11
+
+Geometry files this batch (regions connex):
+Regionfile Connexfile
+
+Integrated counts filename for this batch:
+counts1.sim
+
+start region  |  end region  |  events filename  |  detectors filename  |  parameter name  |  parameter value
+     1               2           events1_1.sim       detectors1_1.sim          scat               0.01
+     1               2           events1_2.sim       detectors1_2.sim          scat               0.015
+     1               2           events1_3.sim       detectors1_3.sim          scat               0.02
+	 1               2           events1_4.sim       detectors1_4.sim          scat               0.025
+	 1               2           events1_5.sim       detectors1_5.sim          scat               0.03
+	 1               2           events1_6.sim       detectors1_6.sim          scat               0.035
+	 1               2           events1_7.sim       detectors1_7.sim          scat               0.04
+     1               2           events1_8.sim       detectors1_8.sim          scat               0.045
+	 1               2           events1_9.sim       detectors1_9.sim          scat               0.05
+	 1               2           events1_10.sim      detectors1_10.sim         scat               0.055
+	 1               2           events1_11.sim      detectors1_11.sim         scat               0.06
+----------------------------------------------------
