@@ -7,7 +7,7 @@ import os
 # Consider rewriting this with a more memory efficient method/structure.
 #############################################################
 # ARR Jan 2012
-def read_regions(regionsfile = 'Regionfile'):
+def read_regions(regionsfile):
   # READ REGIONS FILE INTO 2-D LIST
   regionsfile = open(regionsfile,'r')
   rawtext = regionsfile.read() #extract text

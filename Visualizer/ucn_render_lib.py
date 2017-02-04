@@ -2,7 +2,7 @@ from __future__ import division
 from visual import *
 
 ### Draw imported geometry using VPython objects
-def draw_geom(regions, stringconn):
+def draw_geom(regions):
   # Special region codes are not currently rendered.
   # If you need this, or know of a pretty way to represent it, do let me know.
   pieces = [];
@@ -50,9 +50,9 @@ def draw_geom(regions, stringconn):
 ### Draw all paths from imported text file.
 def draw_simfile(hitplaces, fraction=1):
   total = hitplaces[-1][0]+1
-  print 'totalnumber is ', total
+  print 'The total number of neutrons is ', total
   thisoften = round(total/(fraction*total))
-  print 'Drawing every ',thisoften,' neutrons.'
+  print 'Drawing every ',str(int(thisoften)),' neutrons.'
   counter = -1
   trails = []
   for point in hitplaces:
