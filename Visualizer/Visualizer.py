@@ -18,8 +18,7 @@ if len(sys.argv) == 2:
 else:
     regionfile = sys.argv[1]
     eventsfile = sys.argv[2]
-    trajyn = int(sys.argv[3])
-    trajfrac = float(sys.argv[4])
+    trajfrac = float(sys.argv[3])
 
 print trajyn
 print trajfrac
@@ -35,7 +34,7 @@ def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
     
     pieces[-1].color=vs.color.blue
     
-    if trajyn == 1:
+    if len(sys.argv) == 4:
         eventstotrajectories(eventsfile)
         hitplaces = ucni.read_simfile('cleantraj.txt');
         os.remove("cleantraj.txt")

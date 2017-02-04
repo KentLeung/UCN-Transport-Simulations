@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Running Parameters
-#define N 100  //The number of particles to propagate through the geometry.
+#define N 10000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
@@ -253,20 +253,21 @@ double previntersectime; //Global variable to hold the previous result from 'sol
 FILE *eventsfp; //File pointer for the file to which we will write out event information.
 FILE *detectorsfp; //File pointer for the file to which we will write out detector information.
 
-int main(void) {
-  int i,j,k,nbatch,nsim,startreg,endreg,simskip;
+int main(int argc, char *argv[]) {
+  int h,i,j,k,nbatch,nsim,startreg,endreg,simskip;
   int counts[5]; //Variables to receive integrated counts from detectors.
   double pvalue;
   char skip[500]; //Character array for parsing a 'batch' file.
   char regionsfn[100],connexfn[100],batchcountsfn[100],eventsfn[100],detectorsfn[100],pname[100];
   
   for(k=0 ; k < 5 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors during a simulation run in batch mode.
+    
   
   if(BATCH == "OFF") {  //We are only running one simulation.
     geomread(REGFILE,CONFILE);
     geomprint();
     simexec("events.sim","detectors.sim",counts);
-    return;
+    return 0;
   }
 
   if(BATCH == "ON") {  //We must use the 'batch' file to run multiple simulations.
@@ -314,11 +315,11 @@ int main(void) {
       fgets(skip,500,batchfp); //Skip the "-" that demarks batch runs.
       if(skip[0] != 45) {  //45 is the ASCII code for the character "-".
         printf("+ERROR: Batch File Processing Error! Terminating all subsequent batches...\n");
-        return;
+        return 0;
       }
     }
     fclose(batchfp);
-    return;
+    return 0;
   }
 }
 
