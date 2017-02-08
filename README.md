@@ -1,4 +1,14 @@
 # UCN-Transport-Simulations
 Upgrade and use of Adam Holley's neutron transport code for use in the NCSU UCN project.
 
-Many of these codes (Transport Simulator, visualizer, events to visualizer trajectories, etc) are hardcoded to look for files of a specific name in their specific directory. Since this is the case, be careful about moving things around/copying files etc. It should be a first order of buisness to add functionality to each of these codes to choose input and output files before they run.
+To Do:
+  -Edit Transport Simulator.c to take command line arguments for (necessary so that we do not have to move and copy the sim file everywhere):
+        -location of regionfile
+        -location of connexfile
+        -location to output files
+        -location of batch file (optional, if it exists then run a batch, if it doesn't only run a single run)
+     -all other parameters can be changed in the Regionfile of Connexfile or changed temporarily in the Transport Simulator and then changed back (preferrably make a copy and then delete it afterwards)
+     
+  -Edit Transport simulator so that poof() can be called with a random offset from the cutplane to enable particle generation anywhere in a region: use for Leung Next Generation Source
+  
+  -Edit Transport simulator to enable 108neV boost in random direction on contact with a cutplane: use for simulation of frost on surface of deuterium
