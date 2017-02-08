@@ -71,7 +71,8 @@ int simexec(char [],char [],int *); //Function to execute the main simulation lo
                                                                       //The function returns -1 on error and 0 otherwise.
 void geomread(char [],char []); //Function to fill the above arrays from 'regions' and 'connex'.
                                //The arguments pass the names of the files to read.
-void geomprint(void); //Function to write the above array values into a text file for checking purposes.
+void geomprint(char []); //Function to write the above array values into a text file for checking purposes.
+                                                              //Arugment #1: Name of the file to write to 
 void rota(double,double,double,double,double,double,double *,double *,double *); //Function to rotate a vector in the following order:
                                                                                 // 1. Rotate by psi around global y-axis.
                                                                                //  2. Rotate by theta around x-axis that would result by rotating global x-axis via 1
@@ -261,19 +262,57 @@ int main(int argc, char *argv[]) {
   char regionsfn[100],connexfn[100],batchcountsfn[100],eventsfn[100],detectorsfn[100],pname[100];
   
   for(k=0 ; k < 5 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors during a simulation run in batch mode.
-    
-  
-  if(BATCH == "OFF") {  //We are only running one simulation.
-    geomread(REGFILE,CONFILE);
-    geomprint();
-    simexec("events.sim","detectors.sim",counts);
+  if(argc == 1){ //no path specified as argument
+    printf("specify the path for the region and connex files OR batch file as the argument. './' is okay.");
     return 0;
   }
+  
+  if(argc == 2 && BATCH == "OFF"){ //Path specified AND not using batch mode
+    char* pathRegFile; //full path of the region file
+    pathRegFile = malloc(strlen(argv[1])+1+10); /* make space for the new string (should check the return value ...) */
+    strcpy(pathRegFile, argv[1]); /* copy name into the new var */
+    strcat(pathRegFile, "RegionFile"); /* add the extension */
 
-  if(BATCH == "ON") {  //We must use the 'batch' file to run multiple simulations.
+    char* pathConFile; //full path of the connex file
+    pathConFile = malloc(strlen(argv[1])+1+10); /* make space for the new string (should check the return value ...) */
+    strcpy(pathConFile, argv[1]); /* copy name into the new var */
+    strcat(pathConFile, "Connexfile"); /* add the extension */
+    
+    char* geomoutSimFile; //full path of the geomout.sim file to output. Put it in the same folder as the Region and Connex files
+    geomoutSimFile = malloc(strlen(argv[1])+1+11); /* make space for the new string (should check the return value ...) */
+    strcpy(geomoutSimFile, argv[1]); /* copy name into the new var */
+    strcat(geomoutSimFile, "geomout.sim"); /* add the extension */
+    
+    char* pathEventsSimFile; //full path of the events.sim file to output. Put it in the same folder as the Region and Connex files
+    pathEventsSimFile = malloc(strlen(argv[1])+1+10); /* make space for the new string (should check the return value ...) */
+    strcpy(pathEventsSimFile, argv[1]); /* copy name into the new var */
+    strcat(pathEventsSimFile, "events.sim"); /* add the extension */
+    
+    char* pathDetectorsSimFile; //full path of the detectors.sim file to output. Put it in the same folder as the Region and Connex files
+    pathDetectorsSimFile = malloc(strlen(argv[1])+1+10); /* make space for the new string (should check the return value ...) */
+    strcpy(pathDetectorsSimFile, argv[1]); /* copy name into the new var */
+    strcat(pathDetectorsSimFile, "detectors.sim"); /* add the extension */
+    
+    geomread(pathRegFile,pathConFile);
+    geomprint(geomoutSimFile);
+    simexec(pathEventsSimFile,pathDetectorsSimFile,counts);
+    return 0;
+  }
+    
+  if(argc == 2 && BATCH == "ON") {  //We must use the 'batch' file to run multiple simulations.  
+    char* pathBatchFile; //full path of the batch file
+    pathBatchFile = malloc(strlen(argv[1])+1+5); /* make space for the new string (should check the return value ...) */
+    strcpy(pathBatchFile, argv[1]); /* copy name into the new var */
+    strcat(pathBatchFile, "batch"); /* add the extension */
+    
+    char* pathEventsSimFile; //full path of the events.sim file to output. Put it in the same folder as the Region and Connex files
+    pathEventsSimFile = malloc(strlen(argv[1])+1+10); /* make space for the new string (should check the return value ...) */
+    strcpy(pathEventsSimFile, argv[1]); /* copy name into the new var */
+    strcat(pathEventsSimFile, "events.sim"); /* add the extension */
+    
     FILE *batchfp; //File pointer for the batch file.
     FILE *batchcountsfp; //File pointer for the integrated counts output file.
-    batchfp = fopen("batch","r");
+    batchfp = fopen(pathBatchFile,"r");
 
     fgets(skip,500,batchfp); //Skip "Number of BATCHES to run:".
     fscanf(batchfp,"%d\n",&nbatch); //Get the number of batches to run.
@@ -285,7 +324,7 @@ int main(int argc, char *argv[]) {
       fscanf(batchfp,"%s %s\n",regionsfn,connexfn); //Get the geometry file names for this batch.
       printf("___________________________________________________________\n");
       geomread(regionsfn,connexfn);  //Process the geometry files for this batch.
-      geomprint();
+      geomprint(pathEventsSimFile);
       fgets(skip,500,batchfp); //Skip "Integrated counts filename for this batch:".
       fscanf(batchfp,"%s\n",batchcountsfn); //Get the filename for the integrated counts output file for this batch.
       batchcountsfp = fopen(batchcountsfn,"w+");
@@ -431,10 +470,10 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
   return 0;
 }
 
-void geomprint(void) {
+void geomprint(char *geomoutfn) {
   int i,j;  
   FILE *geomoutfp;
-  geomoutfp = fopen("geomout.sim","w");
+  geomoutfp = fopen(geomoutfn,"w");
   
   fprintf(geomoutfp,"regions:\n\n");
   for(i=0 ; i < 100 ; i++) {
