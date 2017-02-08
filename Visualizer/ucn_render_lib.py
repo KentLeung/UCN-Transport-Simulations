@@ -50,7 +50,7 @@ def draw_geom(regions):
 ### Draw all paths from imported text file.
 def draw_simfile(hitplaces, fraction=1):
   total = hitplaces[-1][0]+1
-  print 'The total number of neutrons is ', total
+  print 'The total number of neutrons is ', int(total)
   thisoften = round(total/(fraction*total))
   print 'Drawing every ',str(int(thisoften)),' neutrons.'
   counter = -1

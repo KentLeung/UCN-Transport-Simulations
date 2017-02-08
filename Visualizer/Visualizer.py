@@ -11,17 +11,12 @@ eventsfile = ""
 trajyn = 0
 trajfrac = 1
 
-print sys.argv
-
 if len(sys.argv) == 2:
     regionfile = sys.argv[1]
 else:
     regionfile = sys.argv[1]
     eventsfile = sys.argv[2]
     trajfrac = float(sys.argv[3])
-
-print trajyn
-print trajfrac
 
 
 def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
