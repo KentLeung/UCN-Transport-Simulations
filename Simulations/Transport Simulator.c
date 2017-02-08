@@ -9,11 +9,11 @@
 #include <time.h>
 
 //Running Parameters
-#define N 10000  //The number of particles to propagate through the geometry.
+#define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
-#define EVENTS "OFF"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
+#define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
 #define REGFILE "Regionfile"  //The name of the 'regions' file to be read.
@@ -196,7 +196,7 @@ int tjunc(int); //Function to determine whether the intersection with a region t
               //Function returns: -1 -> Error ; 0 -> Intersection is NOT at T-junction ; 1 -> Intersection IS at T-junction.
 void cplaneshift(int,int); //Function to shift the basepoint and/or length of a T-ing region depending on which side of the cut-plane the particle is currently
                           //moving. The first argument should be +1 to expand the T-ing region into the connecting region and -1 to shrink the T-ing region so that
-                         //it no longer penetrates the connecting region. The second argumnet passes the region number of the region to be changed.
+                         //it no longer penetrates the connecting region. The second argumet passes the region number of the region to be changed.
 int cplanehandling(void); //Function to take care of handling cut-plane intersections. It passes, bounces, etc. the particle in accordance with the handling code.
                          //The funtion returns -1 on error, 1 for a physical loss, and 0 otherwise.
 void recdet(int [5000][5],int*); //Function to write the detector histograms to a data file. The function passes the array which holds the detector histograms (first
