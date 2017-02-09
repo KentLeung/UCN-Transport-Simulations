@@ -2559,7 +2559,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       printf("+WARNING: Special-handling code 5 used at a connection involving two regions of different type!\n");
     }
     if(regions[neutron.region][4] != regions[regf][4] || regions[neutron.region][5] != regions[regf][5] || regions[neutron.region][6] != regions[regf][6]) {
-      printf("+WARNING: A lip (special-handling code 5) has been specified between two regions that have diferent orientations!\n");
+      printf("+WARNING: A lip (special-handling code 5) has been specified between two regions that have diferent orientations!\nNeutron is leaving region %d and entering region %d.\n", neutron.region, regf);
     }
     if(regions[regf][0] == 2) {  //The connection is between cylinder-regions.
       if(regions[neutron.region][1] < regions[regf][1]) cpcode = -1; //Nothing needs to be done if the particle is going from the smaller to the larger region.
