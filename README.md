@@ -5,6 +5,7 @@ To Do:
 GENERAL
   -Edit Transport Simulator.c to read a parameters file to set the rest of the parameters that are defined as macros in the beginning
   -Edit Visualizer to exclude error trajectories
+  -Have batch simulations output each run to a separate folder
   
 LEUNG SOURCE     
   -Edit transport simulator so that cutplanes can reflect particles with same properties as region. create new special handling code in connex file for this
