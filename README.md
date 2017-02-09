@@ -7,7 +7,6 @@ GENERAL
   -Edit Visualizer to exclude error trajectories
   
 LEUNG SOURCE     
-  -Edit Transport simulator so that poof() can be called with a random offset from the cutplane to enable particle generation anywhere in a region: use for Leung Next Generation Source
   -Edit transport simulator so that cutplanes can reflect particles with same properties as region. create new special handling code in connex file for this
   
 FROST SIMULATIONS
