@@ -407,7 +407,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(1,grn()*.039,0,1); //Create the particle.
+    poof(0,grn()*.039,0,1); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -2485,7 +2485,7 @@ int cplanehandling(void) {
   }
 
     
-  if(cpcode == 2) { //Empty slot for another special-handling code which allows a piece of information placed in parentheses after the code to be stored in cplanes[reg#][3]. Made by Erik Lutz
+  if(cpcode == 2) { //Made by Erik Lutz
  
       //Save initial dynmical information so that if there is no scattering we can reset the particle's initial dynamical informtion.
       double pdymhold[7], scatt, v, costheta, sintheta, phi;
@@ -2606,6 +2606,21 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       cpcode = -1; //The particle is whithin the guide that it is entering and so may be passed through.
     }
   }
+    
+    
+    if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
+        if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1); //Bounce is being called for reflection off the current
+                                                                                                       //region's cut-plane. The models/values and potential will
+                                                                                                      //be those associated with current (box) region.
+        else bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],-1); //The normal used in 'bounce' must be reversed since the particle has hit a cut-plane
+                                                                         //associated with an adjoining region. Note that the models/values and potential used will
+                                                                        //be those associated with the cylinder-region.
+        if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
+        if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
+        if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
+    }
+    
+    
   
   if(cpcode == -1) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
     if(neutron.xcode == 0) {  //Particle is incident on the start-region's cut-plane, whose behavior should have been specified by a special-handling code.
