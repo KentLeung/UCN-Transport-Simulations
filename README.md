@@ -8,7 +8,6 @@ GENERAL
   -Have batch simulations output each run to a separate folder
   
 LEUNG SOURCE     
-  -Edit transport simulator so that cutplanes can reflect particles with same properties as region. create new special handling code in connex file for this. STARTING THIS
   
 FROST SIMULATIONS
   -Edit Transport simulator to enable 108neV boost in random direction on contact with a cutplane: use for simulation of frost on surface of deuterium
