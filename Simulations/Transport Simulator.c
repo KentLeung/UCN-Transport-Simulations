@@ -2653,6 +2653,8 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
 
 
 //      else {  //The particle is passing from a region of lower potential to a region of higher potential and so we must check to see if it bounces or enters.
+        
+        
         if(neutron.xcode == neutron.region) bcheck = bounce(regf,minusdeltakEneV,1); //Bounce is being called for reflection off the current region's cut-plane.
                                                                                      //The models/values used for the bounce will be those of the region into which
                                                                                     //the particle is heading (with the material potential taken as that region's
