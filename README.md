@@ -12,5 +12,3 @@ LEUNG SOURCE
   
 FROST SIMULATIONS
   -Edit Transport simulator to enable 108neV boost in random direction on contact with a cutplane: use for simulation of frost on surface of deuterium
-
-branch todo stuff
