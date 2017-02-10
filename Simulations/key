@@ -129,6 +129,7 @@ Format for 'connex':
                                              4 => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
                                              5 => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
                                                   The lip is taken to have the same material properties as the cut-plane's region.
+                                             6 => Cut-plane acts just like the walls of its associated region
 
 Batch Mode:
   Batch mode is turned on with a flag in the header and allows any number of batches to be run with each batch containing any number of simulation runs. A specified
