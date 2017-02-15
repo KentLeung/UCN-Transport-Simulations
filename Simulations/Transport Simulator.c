@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Running Parameters
-#define N 1000  //The number of particles to propagate through the geometry.
+#define N 100  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
@@ -228,6 +228,7 @@ void event(int,double,double,double,double); //Function to write an event into t
                            //                               16 => Intersection with a T-junction.
                           //                                17 => Particle scattered inside a bulk medium.
 						  //								18 => Detection of a particle by a cut-plane
+                         //                                 19 => Particle lost unphysically
                          //
                         //The subsequent arguments allow data to be passed to 'event'. The type of data will depend on the event code.
 
@@ -428,6 +429,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
       ecode = propagate(); //Propagate the particle to its next intersection.
       if(ecode == -1) {  //This particle encountered an error during propagation so abandon it and move on to the next particle.
         lost++; //Increment the lost particle counter.
+        event(19,0,0,0,0);
         break;
       }
       if(ecode == 8 || ecode == 11) break; //Particle was lost through a physical mechanism... move on to the next particle.
@@ -443,6 +445,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         if(cpcode == 1) break; //The particle was lost due to physical interactions so move on to the next particle.
         if(cpcode == -1) {  //The particle was lost unphysically.
           lost++; //Increment the lost particle counter.
+          event(19,0,0,0,0);
           break; //Move on to the next particle.
         }
       }
@@ -451,6 +454,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         bcode = bounce(neutron.region,rparams[neutron.region][6],1); //Bounce the particle using models/values and wall potential of current region.
         if(bcode == -1) {  //Particle was lost unphysically.
           lost++; //Increment the lost particle counter.
+          event(19,0,0,0,0);
           break; //Abandon the particle.
         }
         if(bcode == 1 || bcode == 2) break; //Particle was lost physically, so move on to the next particle.

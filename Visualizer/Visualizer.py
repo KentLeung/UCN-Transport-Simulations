@@ -17,6 +17,7 @@ else:
     regionfile = sys.argv[1]
     eventsfile = sys.argv[2]
     trajfrac = float(sys.argv[3])
+    cleanorerrors = sys.argv[4]
 
 
 def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
@@ -29,10 +30,10 @@ def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
     
     pieces[-1].color=vs.color.blue
     
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 5:
         eventstotrajectories(eventsfile)
         hitplaces = ucni.read_simfile('cleantraj.txt');
-        os.remove("cleantraj.txt")
+        #os.remove("cleantraj.txt")
         trails = ucnr.draw_simfile(hitplaces,min(trajfrac,max(trajfrac,0)));
 
 def eventstotrajectories(filename): #Convert events.sim file to an acceptable trajectory file
@@ -43,13 +44,37 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
     
     eventlines = rawtext.splitlines()[2:];
     stringevents = [];
+    errors = [];
     
     for lines in eventlines:
-        stringevents.append([lines.split()[0],lines.split()[5],lines.split()[6],lines.split()[7]]);
+        stringevents.append([lines.split()[0],lines.split()[1],lines.split()[5],lines.split()[6],lines.split()[7]]);
     
     #Convert read text values to floats
     events = [map(float,x) for x in stringevents]
 
-    savetxt('cleantraj.txt', events, fmt='%i,%f,%f,%f')
+    #log error particles
+    for line in events:
+        if line[1] == 19:
+            errors.append(line[0])
+
+    #remove event code
+    for event in events:
+        event = event.pop(1)
+
+    print 'There are {:d} errors.'.format(len(errors))
+
+    finalevents = [];
+
+    if cleanorerrors == 'clean':
+        for i in events:
+            if i[0] not in errors:
+                finalevents.append(i)
+
+    if cleanorerrors == 'errors':
+        for i in events:
+            if i[0] in errors:
+                finalevents.append(i)
+
+    savetxt('cleantraj.txt', finalevents, fmt='%i,%f,%f,%f')
 
 visualize(regionfile, eventsfile, trajyn, trajfrac)
