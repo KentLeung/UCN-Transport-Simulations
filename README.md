@@ -10,4 +10,4 @@ GENERAL
 LEUNG SOURCE     
   
 FROST SIMULATIONS
-  -Edit Transport simulator to enable 108neV boost in random direction on contact with a cutplane: use for simulation of frost on surface of deuterium. NOTE: boost from change in Fermi potential is already implemented, this step here will probably just be a matter of setting a random angle leaving the cutplane
+  -Edit Transport simulator to enable 108neV boost in random direction on contact with a cutplane: use for simulation of frost on surface of deuterium
