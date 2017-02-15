@@ -32,10 +32,10 @@ def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
     
     if len(sys.argv) == 5:
         eventstotrajectories(eventsfile)
-        hitplaces = ucni.read_simfile('cleantraj.txt');
-        #os.remove("cleantraj.txt")
+        hitplaces = ucni.read_simfile('traj.txt');
         trails = ucnr.draw_simfile(hitplaces,min(trajfrac,max(trajfrac,0)));
-
+#       if cleanorerrors == 'errors': draw error points
+#           errorpoints = ucnr.draw_errorpoints()
 def eventstotrajectories(filename): #Convert events.sim file to an acceptable trajectory file
     
     eventsfile = open(filename,'r');
@@ -45,6 +45,7 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
     eventlines = rawtext.splitlines()[2:];
     stringevents = [];
     errors = [];
+    errorpoints = [];
     
     for lines in eventlines:
         stringevents.append([lines.split()[0],lines.split()[1],lines.split()[5],lines.split()[6],lines.split()[7]]);
@@ -56,6 +57,7 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
     for line in events:
         if line[1] == 19:
             errors.append(line[0])
+            errorpoints.append([line[2], line[3], line[4]])
 
     #remove event code
     for event in events:
@@ -75,6 +77,7 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
             if i[0] in errors:
                 finalevents.append(i)
 
-    savetxt('cleantraj.txt', finalevents, fmt='%i,%f,%f,%f')
+    savetxt('traj.txt', finalevents, fmt='%i,%f,%f,%f')
+    savetxt('errorpoints.txt', errorpoints, fmt='%f,%f,%f')
 
 visualize(regionfile, eventsfile, trajyn, trajfrac)
