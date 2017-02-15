@@ -64,3 +64,24 @@ def draw_simfile(hitplaces, fraction=1):
     else:
       counter = point[0]
   return trails
+
+def draw_errorpoints():
+    file = open('errorpoints.txt','r')
+    filetxt = file.read()
+    file.close()
+            
+    errors = filetxt.splitlines()
+            
+    errorpointlocations = []
+    for line in errors:
+        errorpointlocations.append(line.split(','))
+    
+    errorpointlocations = [map(float,x) for x in errorpointlocations]
+
+    errorpoints = []
+            
+    for point in errorpointlocations:
+        errorpoints.append(points(pos=(point[0],point[1],point[2]), size=5, color=color.green))
+                           
+    return errorpoints
+
