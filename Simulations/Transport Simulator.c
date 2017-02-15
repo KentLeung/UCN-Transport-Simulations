@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Running Parameters
-#define N 100  //The number of particles to propagate through the geometry.
+#define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
