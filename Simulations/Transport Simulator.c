@@ -200,7 +200,7 @@ void cplaneshift(int,int); //Function to shift the basepoint and/or length of a 
                          //it no longer penetrates the connecting region. The second argumet passes the region number of the region to be changed.
 int cplanehandling(void); //Function to take care of handling cut-plane intersections. It passes, bounces, etc. the particle in accordance with the handling code.
                          //The funtion returns -1 on error, 1 for a physical loss, and 0 otherwise.
-void recdet(int [5000][5],int*); //Function to write the detector histograms to a data file. The function passes the array which holds the detector histograms (first
+void recdet(int [5000][10],int*); //Function to write the detector histograms to a data file. The function passes the array which holds the detector histograms (first
                            //argument) and a pointer to an array that holds the integrated counts for each detector (second argument).
 int paramadjust(char [],char [],int,int,double); //Function to adjust a physics parameter to a new value. The arguments are as follows:
                                                 //(action, parameter name, start region, end region, new parameter value) where 'start region' and 'end region'
@@ -257,12 +257,12 @@ FILE *detectorsfp; //File pointer for the file to which we will write out detect
 
 int main(int argc, char *argv[]) {
   int h,i,j,k,nbatch,nsim,startreg,endreg,simskip;
-  int counts[5]; //Variables to receive integrated counts from detectors.
+  int counts[10]; //Variables to receive integrated counts from detectors.
   double pvalue;
   char skip[500]; //Character array for parsing a 'batch' file.
   char regionsfn[100],connexfn[100],batchcountsfn[100],eventsfn[100],detectorsfn[100],pname[100];
   
-  for(k=0 ; k < 5 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors during a simulation run in batch mode.
+  for(k=0 ; k < 10 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors during a simulation run in batch mode.
   if(argc == 1){ //no path specified as argument
     printf("specify the path for the region and connex files OR batch file as the argument. './' is okay.");
     return 0;
@@ -334,7 +334,7 @@ int main(int argc, char *argv[]) {
         for(j=0 ; j < nsim ; j++) {  //Loop to run through the required number of simulations for this batch.
           simskip = 0; //Set the batch file error flag.
           fscanf(batchfp,"%d %d %s %s %s %lf\n",&startreg,&endreg,eventsfn,detectorsfn,pname,&pvalue);  //Get batch information.
-          for(k=0 ; k < 5 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors for a particular simulation run.
+          for(k=0 ; k < 10 ; k++) counts[k] = 0; //Zero the variables for recording integrated counts in the detectors for a particular simulation run.
           printf("-------------------------------------------------------\n");
           printf("\nBatch# = %d  |  Simulation# = %d  |  %s = %f\n\n",i,j,pname,pvalue); //Print batch information to console.
           if(paramadjust("set",pname,startreg,endreg,pvalue) != 0) {  // Adjust the relevant parameters, terminate this simulation on error.
@@ -384,10 +384,10 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
   
 //-------------------------------------------------BEGIN SIMULATION LOGIC--------------------------------------------------//
   int its,n,ecode,i,j,lost,bcode,cpcode;
-  int detectors[5000][5]; //Array to hold detector hits. It currently allows .1s resolution over a 5min. run and provides slots for up to five detectors.
+  int detectors[5000][10]; //Array to hold detector hits. It currently allows .1s resolution over a 5min. run and provides slots for up to five detectors.
   
   for(i=0 ; i < 5000 ; i++) {  //Zero the 'detectors' array.
-    for(j=0 ; j < 5 ; j++) {
+    for(j=0 ; j < 10 ; j++) {
       detectors[i][j] = 0;
     }
   }
@@ -2692,17 +2692,19 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
   return -1;
 }
 
-void recdet(int detectors[5000][5], int *counts) {
+void recdet(int detectors[5000][10], int *counts) {
   int i;
   
-  fprintf(detectorsfp,"#Time      |   Counts D1   |   Counts D2   |   Counts D3   |   Counts D4   |   Counts D5   \n");
+  fprintf(detectorsfp,"#Time      |   Counts D1   |   Counts D2   |   Counts D3   |   Counts D4   |   Counts D5   |   Counts D6   |   Counts D7   |   Counts D8   |   Counts D9   |   Counts D10 \n");
   for(i=0 ; i < 5000 ; i++) {
     fprintf(detectorsfp,"%lf ",i/10.);
     fprintf(detectorsfp,"      %d               %d               %d",detectors[i][0],detectors[i][1],detectors[i][2]);
-    fprintf(detectorsfp,"               %d               %d\n",detectors[i][3],detectors[i][4]);
+    fprintf(detectorsfp,"               %d               %d",detectors[i][3],detectors[i][4]);
+    fprintf(detectorsfp,"               %d               %d               %d",detectors[i][5],detectors[i][6],detectors[i][7]);
+    fprintf(detectorsfp,"               %d               %d\n",detectors[i][8],detectors[i][9]);
   }
   fprintf(detectorsfp,"\nTotal Counts:\n");
-  for(i=0 ; i < 5 ; i++) fprintf(detectorsfp,"Detector %d -> %d\n",(i+1),counts[i]);
+  for(i=0 ; i < 10 ; i++) fprintf(detectorsfp,"Detector %d -> %d\n",(i+1),counts[i]);
   return;
 }
 
