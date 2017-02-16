@@ -1,4 +1,4 @@
 # Files and file types to Ignore #
 ##################################
 
-**/events.sim #ignore all events.sim files because they can get very large
+**/events.sim
