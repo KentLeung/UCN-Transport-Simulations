@@ -1066,7 +1066,7 @@ double solve4(double c4, double c3, double c2, double c1, double c0) {
       return t; //Return the value of the found and improved root;
     }
     if(flag2 == 0 && fabs(error) < 1e-3 && t < 0) return 0; //We return 0 if there are no physical (nonzero) solutions.
-    if(flag2 == -1) flag1 == 0; //If Newton's method produced an error so we should expand our search for a root.
+    if(flag2 == -1) flag1 = 0; //If Newton's method produced an error so we should expand our search for a root.
   }
   
   if(flag1 != -1) {  //No definite determination of which signs to use or root finding failed even with a valid sign determination.
@@ -1556,9 +1556,12 @@ int bounce(int parareg, double mpot, int dirflag) {
       return -1; //Error event code returned.
     }
   }
+    
+  printf("+ERROR: 'bounce' called with no result. Particle number %d abandoned!\n",neutron.num);
+  return -1;
 }
 
-nsbounce(int parareg, int dirflag, int depolflag, double vxb, double vyb, double vzb) {
+int nsbounce(int parareg, int dirflag, int depolflag, double vxb, double vyb, double vzb) {
   int check;
   double cosexpang,sinexpang,exazang,pang,azang,vmag;
   
@@ -2489,73 +2492,49 @@ int cplanehandling(void) {
   }
 
     
-  if(cpcode == 2) { //Made by Erik Lutz
- 
-      //Save initial dynmical information so that if there is no scattering we can reset the particle's initial dynamical informtion.
-      double pdymhold[7], scatt, v, costheta, sintheta, phi;
-      
-      pdymhold[0] = neutron.t;
-      pdymhold[1] = neutron.x;
-      pdymhold[2] = neutron.y;
-      pdymhold[3] = neutron.z;
-      pdymhold[4] = neutron.vx;
-      pdymhold[5] = neutron.vy;
-      pdymhold[6] = neutron.vz;
-      
-      scatt = cplanes[regf][3];
+  if(cpcode == 2) { //Transmitted through a surface with a defined roughness. Made by Erik Lutz and Thomas Bailey
+      double vparix,vpariy,vpariz;             //Initiating the initial components of the parallel component of the
+      double vperpx,vperpy,vperpz;            //velocity vector to the scattering angle, the components of the perpendicular components of the
+      double nx,ntheta,nphi;                 //velocity vector with respect to the scattering angle, the components of the scattering angle n
+      double vimag;                         //magnitude of the initial vector
+      double nxhat,nthetahat,nphihat;      //unit vector components of n
+      double vparmagi,vboostmag,vparmagf; //magnitude of the initial parallel component of the velocity vector and the
+      double vparfx,vparfy,vparfz;       //components of the final parallel vector
+      ntheta = cos(PI*grn());           //gives a value of theta for the scattering vector, between 0 and Pi
+      nphi = cos(PI*grn());            //gives a value of phi for the scattering vector between 0 and Pi
 
-      if(grn() < scatt) {  //The particle scattered.
-              v = sqrt(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2)); //Calculate the speed of the paticle at point of scatter. (It can change from the
-              //previously calculated value due to gravity.)
-              costheta = PI*grn(); //Pick an isotropic theta in [0,Pi];
-              sintheta = sqrt(1. - pow(costheta,2)); //Calculate the sin of the isotropic angle.
-              phi = 2.*PI*grn(); //Pick a random phi in [0,2 Pi].
-              if(EVENTS == "ON") event(2,0,0,0,0); //Write an event to record the particle's dynamical information just before the scatter.
-              neutron.vx = v*sintheta*cos(phi);  //Calculate the new velocity vector
-              neutron.vy = v*sintheta*sin(phi); //for the randomly chosen exit direction
-              neutron.vz = v*costheta;         //assuming an elastic scatter.
-	      double vparix,vpariy,vpariz;             //Thomas Bailey.  Initiating the initial components of the parallel component of the
-              double vperpx,vperpy,vperpz;            //velocity vector to the scattering angle, the components of the perpendicular components of the
-              double nx,ntheta,nphi;                 //velocity vector with respect to the scattering angle, the components of the scattering angle n
-              double vimag;                         //magnitude of the initial vector
-              double nxhat,nthetahat,nphihat;      //unit vector components of n
-              double vparmagi,vboostmag,vparmagf; //magnitude of the initial parallel component of the velocity vector and the
-              double vparfx,vparfy,vparfz;       //components of the final parallel vector
-              ntheta = cos(PI*grn());           //gives a value of theta for the scattering vector, between 0 and Pi
-              nphi = cos(PI*grn());            //gives a value of phi for the scattering vector between 0 and Pi
-              vboostmag = 108;                //The Fermi Potential through which the neutron is accelerated
-              nthetahat = ntheta/(ntheta*ntheta+nphi*nphi);                         //Calculating the components of the normal unit vector
-              nphihat = nphi/(ntheta*ntheta+nphi*nphi);
-              nxhat = 1/(ntheta*ntheta+nphi*nphi);
-              vimag = sqrt(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2);    //Calculating the initial velocity vector's magnitude
-              vparix = pow(neutron.vx,2)*nxhat/vimag;               //Calculating the x,y,z components of the initial velocity
-              vpariy = pow(neutron.vy,2)*nthetahat/vimag;          //vector's component parallel to the scattering angle
-              vpariz = pow(neutron.vz,2)*nphihat/vimag;
-              vperpx=neutron.vx-vparix;            //Calculating the x,y,z components of the initial velocity
-              vperpz=neutron.vz-vpariz;           //vector's component perpendicular to the scattering angle
-              vperpz=neutron.vz-vpariz;
-              vparmagi=sqrt(pow(vparix,2)+pow(vpariy,2)+pow(vpariz,2));  //Finding the magnitude of the initial parallel vector
-              vparmagf=sqrt(pow(vparmagi,2)+vboostmag(pow,2));          //Calculating the magnitude of the final parallel vector
-              vparfx=vparmagf*nxhat;                                   //and finding its x,y,z components by adding the Fermi Potential
-              vparfy=vparmagf*nthetahat;                              //then multiplying the final magnitude by the components of the
-              vparfz=vparmagf*nphihat;                               //scattering unit vector.
-              neutron.vx=sqrt(pow(vparfx,2)+pow(vperpx,2));   //Setting the Neutron's new speed by calculating the
-              neutron.vy=sqrt(pow(vparfy,2)+pow(vperpy,2));  //hypotenuse of the parallel component and the perpendicular component
-              neutron.vz=sqrt(pow(vparfz,2)+pow(vperpz,2));
-              return 2; //Return the event code for a scattering event.
+      if(neutron.xcode == 0) {  //Particle is incident on the start-region's cut-plane, whose behavior should have been specified by a special-handling code.
+          printf("+WARNING: Particle number %d escaped through the start-region's cut-plane since no definite handling instruction was given!\n",neutron.num);
+          return -1; //Return the error code so that particle will be dropped.
       }
       
-      else {return 0;event(0,0,0,0,0);}
+      if(rparams[neutron.region][7] == rparams[regf][7]) {  //There is no difference in Fermi potential between the regions so simply pass the particle through.
+          neutron.region = regf; //Set the particle's region so that intersections with the correct parts of the geometry will be sought.
+          return 0;
+      }
       
-      //The particle did not scatter so reset the particle its original state.
-      neutron.t = pdymhold[0];
-      neutron.x = pdymhold[1];
-      neutron.y = pdymhold[2];
-      neutron.z = pdymhold[3];
-      neutron.vx = pdymhold[4];
-      neutron.vy = pdymhold[5];
-      neutron.vz = pdymhold[6];
       
+      
+      vboostmag = 108;                //The Fermi Potential through which the neutron is accelerated
+      nthetahat = ntheta/(ntheta*ntheta+nphi*nphi);                         //Calculating the components of the normal unit vector
+      nphihat = nphi/(ntheta*ntheta+nphi*nphi);
+      nxhat = 1/(ntheta*ntheta+nphi*nphi);
+      vimag = sqrt(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2));    //Calculating the initial velocity vector's magnitude
+      vparix = pow(neutron.vx,2)*nxhat/vimag;               //Calculating the x,y,z components of the initial velocity
+      vpariy = pow(neutron.vy,2)*nthetahat/vimag;          //vector's component parallel to the scattering angle
+      vpariz = pow(neutron.vz,2)*nphihat/vimag;
+      vperpx=neutron.vx-vparix;            //Calculating the x,y,z components of the initial velocity
+      vperpz=neutron.vz-vpariz;           //vector's component perpendicular to the scattering angle
+      vperpz=neutron.vz-vpariz;
+      vparmagi=sqrt(pow(vparix,2)+pow(vpariy,2)+pow(vpariz,2));  //Finding the magnitude of the initial parallel vector
+      vparmagf=sqrt(pow(vparmagi,2)+pow(vboostmag,2));          //Calculating the magnitude of the final parallel vector
+      vparfx=vparmagf*nxhat;                                   //and finding its x,y,z components by adding the Fermi Potential
+      vparfy=vparmagf*nthetahat;                              //then multiplying the final magnitude by the components of the
+      vparfz=vparmagf*nphihat;                               //scattering unit vector.
+      neutron.vx=sqrt(pow(vparfx,2)+pow(vperpx,2));   //Setting the Neutron's new speed by calculating the
+      neutron.vy=sqrt(pow(vparfy,2)+pow(vperpy,2));  //hypotenuse of the parallel component and the perpendicular component
+      neutron.vz=sqrt(pow(vparfz,2)+pow(vperpz,2));
+      return 2; //Return the event code for a scattering event.
   }
   
   if(cpcode == 3) {  //Spin-flip resonance.
