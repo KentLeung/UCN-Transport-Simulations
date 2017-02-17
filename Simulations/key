@@ -122,14 +122,15 @@ Format for 'connex':
   would indicate that the cut-plane ASSOCIATED WITH REGION 2 (and which sits between region 2 and region 1) needs to be handled specially.
   
   Pre-programmed special handling codes are:
-                                             1 => Cut-plane is 100% absorptive
-                                             2 => Cut-plane has a probability of elastic scattering into 2pi specified by a number (0-1) placed in parenthesis after the code.
-                                                  For example, '5,2(.38) 6' would set a scattering probability of 38% to region 5's cut-plane
-                                             3 => Cut-plane represents a spin-flip resonance. Spin-flip efficiencies are defined in the handling routine.
-                                             4 => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
-                                             5 => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
-                                                  The lip is taken to have the same material properties as the cut-plane's region.
-                                             6 => Cut-plane acts just like the walls of its associated region
+                                             1    => Cut-plane is 100% absorptive
+                                             2(x) => Cut-plane is modeled with surface roughness. x is a parameter passed to cplanes[reg][3] and will eventually be used to
+                                                     define the surface roughness model to be used. Currently surface transmits particles through and then redirects isotropically
+                                                     a hemisphere placed side of the cutplane opposite to the point of incidence.
+                                             3    => Cut-plane represents a spin-flip resonance. Spin-flip efficiencies are defined in the handling routine.
+                                             4    => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
+                                             5    => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
+                                                     The lip is taken to have the same material properties as the cut-plane's region.
+                                             6    => Cut-plane acts just like the walls of its associated region
 
 Batch Mode:
   Batch mode is turned on with a flag in the header and allows any number of batches to be run with each batch containing any number of simulation runs. A specified

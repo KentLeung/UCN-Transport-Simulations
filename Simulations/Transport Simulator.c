@@ -228,7 +228,8 @@ void event(int,double,double,double,double); //Function to write an event into t
                            //                               16 => Intersection with a T-junction.
                           //                                17 => Particle scattered inside a bulk medium.
 						  //								18 => Detection of a particle by a cut-plane
-                         //                                 19 => Particle lost unphysically
+                         //                                 19 => Particle lost unphysically, same as -1: added unnecessarily but now used in the visualizer code so dont delete
+                        //                                  20 => Particle interacted with a cutplane with defined surface roughness
                          //
                         //The subsequent arguments allow data to be passed to 'event'. The type of data will depend on the event code.
 
@@ -2534,7 +2535,7 @@ int cplanehandling(void) {
       neutron.vx=sqrt(pow(vparfx,2)+pow(vperpx,2));   //Setting the Neutron's new speed by calculating the
       neutron.vy=sqrt(pow(vparfy,2)+pow(vperpy,2));  //hypotenuse of the parallel component and the perpendicular component
       neutron.vz=sqrt(pow(vparfz,2)+pow(vperpz,2));
-      return 2; //Return the event code for a scattering event.
+      return 20; //Return the event code for a surface roughness interaction event.
   }
   
   if(cpcode == 3) {  //Spin-flip resonance.
