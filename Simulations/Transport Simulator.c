@@ -2552,6 +2552,8 @@ int cplanehandling(void) {
       if (bcheck == 0 && neutron.vx <= 0) neutron.vx = -neutron.vx; //Neutron couldn't make it through fermi potential difference but applied random angle has velocity going into the
                                                                    //new region. We fix this by flipping the sign of the x component of the velocity so energy is preserved
       if (bcheck == 1 && neutron.vx >= 0) neutron.vx = -neutron.vx; //similarly to above we dont want the particles changing regions now
+      
+      bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new velocity back into the global system.
 
       
       
