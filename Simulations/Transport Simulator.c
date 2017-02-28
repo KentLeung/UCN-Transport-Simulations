@@ -233,6 +233,8 @@ void event(int,double,double,double,double); //Function to write an event into t
                          //
                         //The subsequent arguments allow data to be passed to 'event'. The type of data will depend on the event code.
 
+void cprandperturb(void); //function to randomly perturb a particles trajectory after an intersection with a cutplane, used to simulate surface roughness
+
 
 struct particle {  //This structure holds all the dynamical information about a particular particle.
   double t; //time
@@ -2990,4 +2992,70 @@ void event(int eventcode,double data1,double data2,double data3, double data4) {
   fprintf(eventsfp,"   %f    %f    %f",neutron.vx,neutron.vy,neutron.vz);
   fprintf(eventsfp,"   %f    %f    %f    %f\n",neutron.spin[2],data1,data2,data3);
   return;
+}
+
+void cprandperturb(void) {
+  double v, vnx, vny, vnz;
+  double surfparamexp, surfparamlin;
+  double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
+  
+  gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vyb,&vzb);
+  
+  v = sqrt(pow(vnx,2)+pow(vny,2)+pow(vnz,2));
+  
+  randthetaseed = grn();
+  randphiseed = grn();
+  
+  theta = acos(vnx/v);   //define current inclination angle
+  phi = atan2(vnz,vny); //define current inclination angle
+  
+  surfparamexp = 1.0/cplanes[neutron.xcode][3];    //grab user supplied surface roughness parameter for exponential model
+  surfparamlin = cplanes[neutron.xcode][3]-1.;    //grab user supplied surface roughness parameter for linear model
+  
+  if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
+    randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
+    randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
+  }
+  
+  if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
+    randtheta = acos(1.-2.*surfparamlin*randthetaseed);
+    randphi = PI*surfparamlin*randphiseed;
+  }
+  
+  if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
+  if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+
+  if (vnx > 0) { //particle is above cut-plane
+    while (theta + randtheta > PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+      if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
+        randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
+        randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
+      }
+      
+      if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
+        randtheta = acos(1.-2.*surfparamlin*randthetaseed);
+        randphi = PI*surfparamlin*randphiseed;
+      }
+      
+      if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
+      if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+    }
+  }
+  
+  if (vnx < 0) { //particle is below cut-plane
+    while (theta + randtheta < PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+      if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
+        randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
+        randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
+      }
+      
+      if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
+        randtheta = acos(1.-2.*surfparamlin*randthetaseed);
+        randphi = PI*surfparamlin*randphiseed;
+      }
+      
+      if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
+      if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+    }
+  }
 }
