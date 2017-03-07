@@ -233,7 +233,7 @@ void event(int,double,double,double,double); //Function to write an event into t
                          //
                         //The subsequent arguments allow data to be passed to 'event'. The type of data will depend on the event code.
 
-void cprandperturb(void); //function to randomly perturb a particles trajectory after an intersection with a cutplane, used to simulate surface roughness
+void cprandperturb(void); //function to randomly perturb a particles trajectory after an intersection with a cutplane, used to simulate surface roughness, created by Erik Lutz
 
 
 struct particle {  //This structure holds all the dynamical information about a particular particle.
@@ -2568,53 +2568,6 @@ int cplanehandling(void) {
     return 1; //Return the physical loss code so that the particle will be dropped.
   }
 
-    
-  if(cpcode == 2) { //Transmitted through a surface with a defined roughness. Made by Erik Lutz and Thomas Bailey
-      
-      //printf("Particle interacted with rough surface.\n");
-      
-      if(neutron.xcode == 0) {  //Particle is incident on the start-region's cut-plane, whose behavior should have been specified by a special-handling code.
-          printf("+WARNING: Particle number %d escaped through the start-region's cut-plane since no definite handling instruction was given!\n",neutron.num);
-          return -1; //Return the error code so that particle will be dropped.
-      }
-      
-      if(rparams[neutron.region][7] == rparams[regf][7]) {  //There is no difference in Fermi potential between the regions so simply pass the particle through.
-          neutron.region = regf; //Set the particle's region so that intersections with the correct parts of the geometry will be sought.
-          return 0;
-      }
-      
-      else {
-          gsys2roughbsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb);           //Transform the particle's velocity into the bounce system (where, since the intersection
-                                                                                   //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
-                                                                                  //cut-plane's region) so that normal velocity component shifts may be calculated below.
-          deltakE = (rparams[neutron.region][7] - rparams[regf][7])*neV2J;     //The difference in Fermi potential between the region the particle is leaving (defined
-                                                                               //at its cut-plane) and the region it is entering (defined at its cut-plane) gives the
-                                                                              //required energy shift, i.e deltakE = PEi - PEf
-          
-          
-          if (0.5*nMASS*pow(vn,2) < -deltakE) { //Neutron bounces off of cut-plane
-              vn = -vn;                     //reverse normal particle velocity
-              return 0;
-          }
-          else {                        //particle penetrates wall
-              neutron.region = regf; //Pass the particle through the cut-plane.
-              
-              if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
-                  printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component!\n",neutron.num);
-                  return -1; //Abandon the particle.
-              }
-              
-              vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
-              bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new velocity back into the global system.
-              if(EVENTS == "ON") event(20,0,0,0,0); //Log an event.
-              return 0;
-          }
-          
-          printf("+ERROR: Reached end of rough surface interaction without returning a value!");
-          return -1; //Drop particle since error.
-      }
-  }
-
   if(cpcode == 3) {  //Spin-flip resonance.
     flipeff = 0.996; //Set the spin-flip efficiency.
     if(grn() < flipeff) neutron.spin[2] = -neutron.spin[2]; //Check for spin-flip and flip the spin if there is one.
@@ -2696,22 +2649,23 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
     }
   }
     
-    
-    if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
-        if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1); //Bounce is being called for reflection off the current
-                                                                                                       //region's cut-plane. The models/values and potential will
-                                                                                                      //be those associated with current (box) region.
-        else bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],-1); //The normal used in 'bounce' must be reversed since the particle has hit a cut-plane
-                                                                         //associated with an adjoining region. Note that the models/values and potential used will
-                                                                        //be those associated with the cylinder-region.
-        if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
-        if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
-        if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
-    }
+  
+  if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
+      if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1); //Bounce is being called for reflection off the current
+                                                                                                     //region's cut-plane. The models/values and potential will
+                                                                                                    //be those associated with current (box) region.
+      else bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],-1); //The normal used in 'bounce' must be reversed since the particle has hit a cut-plane
+                                                                       //associated with an adjoining region. Note that the models/values and potential used will
+                                                                      //be those associated with the cylinder-region.
+      if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
+      if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
+      if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
+  }
     
     
   
-  if(cpcode == -1) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
+  if(cpcode == -1 || cpcode == 2) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
+                                    //OR the surface has a defined surface roughness, implemented by Erik Lutz
     if(neutron.xcode == 0) {  //Particle is incident on the start-region's cut-plane, whose behavior should have been specified by a special-handling code.
       printf("+WARNING: Particle number %d escaped through the start-region's cut-plane since no definite handling instruction was given!\n",neutron.num);
       return -1; //Return the error code so that particle will be dropped.
@@ -2730,29 +2684,40 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       minusdeltakEneV = -(rparams[neutron.region][7] - rparams[regf][7]);
         
         
-        if(neutron.xcode == neutron.region) bcheck = bounce(regf,minusdeltakEneV,1); //Bounce is being called for reflection off the current region's cut-plane.
-                                                                                     //The models/values used for the bounce will be those of the region into which
-                                                                                    //the particle is heading (with the material potential taken as that region's
-                                                                                   //bulk potential).
-        else bcheck = bounce(regf,minusdeltakEneV,-1); //The normal used in 'bounce' must be reversed since particle may reflect off a cut-plane associated with an
-                                                       //adjoining region. The models/values for the region the particle is trying to enter will be used for the
-                                                      //bounce (with the material potential taken as that region's bulk potential).
-        if(bcheck == 0) return 0; //The particle bounced off the cut-plane and has been given a new bounced velocity.
-        if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
-          neutron.region = regf; //Pass the particle through the cut-plane.
-          if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
-            printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component!\n",neutron.num);
-            return -1; //Abandon the particle.
-          }
-          vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
-          bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new velocity back into the global system.
-          if(EVENTS == "ON") event(15,0,0,0,0); //Log an event.
-          return 0;
+      if(neutron.xcode == neutron.region) bcheck = bounce(regf,minusdeltakEneV,1); //Bounce is being called for reflection off the current region's cut-plane.
+                                                                                   //The models/values used for the bounce will be those of the region into which
+                                                                                  //the particle is heading (with the material potential taken as that region's
+                                                                                 //bulk potential).
+      else bcheck = bounce(regf,minusdeltakEneV,-1); //The normal used in 'bounce' must be reversed since particle may reflect off a cut-plane associated with an
+                                                     //adjoining region. The models/values for the region the particle is trying to enter will be used for the
+                                                    //bounce (with the material potential taken as that region's bulk potential).
+      if(bcheck == 0) { //The particle bounced off the cut-plane and has been given a new bounced velocity.
+        if (cpcode == 2) {//the surface has a defined roughness
+          cprandperturb();
         }
-        if(bcheck == 2) return 1; //The particle was lost physically during the bounce.
-        if(bcheck == -1) return -1; //The particle was lost unphysically during the bounce.
-        printf("+ERROR: Eroneous code received from 'bounce'! [Particle# = %d\n]",neutron.num);
-        return -1;
+        
+        return 0;
+      }
+      if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
+        neutron.region = regf; //Pass the particle through the cut-plane.
+        if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
+          printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component!\n",neutron.num);
+          return -1; //Abandon the particle.
+        }
+        vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
+        bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new velocity back into the global system.
+        
+        if (cpcode == 2) {//the surface has a defined roughness
+          cprandperturb();
+        }
+        
+        if(EVENTS == "ON") event(15,0,0,0,0); //Log an event.
+        return 0;
+      }
+      if(bcheck == 2) return 1; //The particle was lost physically during the bounce.
+      if(bcheck == -1) return -1; //The particle was lost unphysically during the bounce.
+      printf("+ERROR: Eroneous code received from 'bounce'! [Particle# = %d\n]",neutron.num);
+      return -1;
 
       if(CONSOLE == "ON") printf("+WARNING: Error during particle %d's encounter with a bulk medium!\n",neutron.num);
       return -1; //Drop particle since error in determination of particle interaction with medium.
@@ -2994,12 +2959,15 @@ void event(int eventcode,double data1,double data2,double data3, double data4) {
   return;
 }
 
-void cprandperturb(void) {
+void cprandperturb(void) { //created by Erik Lutz
   double v, vnx, vny, vnz;
   double surfparamexp, surfparamlin;
   double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
+  double thetaf, phif;
   
-  gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vyb,&vzb);
+  //printf("Rough surface encountered.\n");
+  
+  gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vny,&vnz);
   
   v = sqrt(pow(vnx,2)+pow(vny,2)+pow(vnz,2));
   
@@ -3024,9 +2992,38 @@ void cprandperturb(void) {
   
   if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
   if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+  
+  thetaf = theta + randtheta;
+  phif = phi + randphi;
+  
+//  if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
+//    thetaf = 2*PI - (theta + randtheta);
+//    phif = (phi + randphi) + PI;
+//  }
+//  
+//  if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
+//    thetaf = fabs(theta + randtheta);
+//    phif = (phi + randphi) + PI;
+//  }
+//  
+//  if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
+//    phif = phif + 2*PI;
+//  }
+//  
+//  if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
+//    phif = phif - 2*PI;
+//  }
+  
+  //printf("Check 1.\n");
 
   if (vnx > 0) { //particle is above cut-plane
-    while (theta + randtheta > PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+    while (thetaf > PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+      
+      randthetaseed = grn();
+      randphiseed = grn();
+      
+      //printf("randthetaseed = %f.\n",randthetaseed);
+      
       if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
         randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
         randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
@@ -3039,11 +3036,40 @@ void cprandperturb(void) {
       
       if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
       if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+      
+      thetaf = theta + randtheta;
+      phif = phi + randphi;
+      
+      //printf("thetaf = %f.\n",thetaf);
+      
+//      if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
+//        thetaf = 2*PI - (theta + randtheta);
+//        phif = (phi + randphi) + PI;
+//      }
+//      
+//      if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
+//        thetaf = fabs(theta + randtheta);
+//        phif = (phi + randphi) + PI;
+//      }
+//      
+//      if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
+//        phif = phif + 2*PI;
+//      }
+//      
+//      if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
+//        phif = phif - 2*PI;
+//      }
     }
   }
   
+  //printf("Check 1.1.\n");
+  
   if (vnx < 0) { //particle is below cut-plane
-    while (theta + randtheta < PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+    while (thetaf < PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+      
+      randthetaseed = grn();
+      randphiseed = grn();
+      
       if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
         randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
         randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
@@ -3056,6 +3082,39 @@ void cprandperturb(void) {
       
       if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
       if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+      
+      thetaf = theta + randtheta;
+      phif = phi + randphi;
+      
+//      if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
+//        thetaf = 2*PI - (theta + randtheta);
+//        phif = (phi + randphi) + PI;
+//      }
+//      
+//      if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
+//        thetaf = fabs(theta + randtheta);
+//        phif = (phi + randphi) + PI;
+//      }
+//      
+//      if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
+//        phif = phif + 2*PI;
+//      }
+//      
+//      if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
+//        phif = phif - 2*PI;
+//      }
     }
   }
+  
+  //printf("Check 2.\n");
+  printf("Theta: %f --> %f. Phi: %f --> %f.\n", theta*180/PI, thetaf*180/PI, phi*180/PI, phif*180/PI);
+  
+  //apply new direction to vector
+  vnx = v*cos(thetaf);
+  vny = v*sin(thetaf)*cos(phif);
+  vnz = v*sin(thetaf)*sin(phif);
+  
+  bsys2gsys(vnx,vny,vnz,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new direction back into the global system.
+  
+  //printf("Particle perturbed.\n");
 }
