@@ -12,7 +12,7 @@
 #define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
-#define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
+#define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
 #define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
@@ -411,7 +411,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(0,0,0,0); //Create the particle.
+    poof(1,0,0,0); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -1945,80 +1945,6 @@ void gsys2bsys(double gcx,double gcy,double gcz,double *bcx,double *bcy,double *
   return;
 }
 
-void gsys2roughbsys(double gcx,double gcy,double gcz,double *bcx,double *bcy,double *bcz) {
-    double nx,ny,nz,lx,ly,lz,tx,ty,tz,mag;
-    double randtheta, randphi, surfparamexp, surfparamlin, normmag, normtheta, normphi;
-    double finaltheta, finalphi, finalr;
-    
-    surfparamexp = 1.0/cplanes[neutron.xcode][3];    //grab user supplied surface roughness parameter for exponential model
-    surfparamlin = cplanes[neutron.xcode][3]-1;    //grab user supplied surface roughness parameter for linear model
-
-    if (cplanes[neutron.xcode][3] <= 1) { //use exponential model
-        randtheta = (PI/2.)*pow(grn(),surfparamexp);         //generate a weighted random inclination angle between 0 and PI/2
-        randphi = PI*pow(grn(),surfparamexp);          //generate an weighted random azimuthal angle between 0 and PI
-    }
-    
-    if ((cplanes[neutron.xcode][3] > 1) && (cplanes[neutron.xcode][3] <= 2)) { //use linear model
-        randtheta = (PI/2.)*surfparamlin*grn();         //generate a weighted random inclination angle between 0 and PI/2
-        randphi = PI*surfparamlin*grn();
-    }
-    
-    if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign
-    if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign
-    
-    if(neutron.xcode != -1 && neutron.xcode < 0) {  //Particle does not have a current intersection.
-        printf("+ERROR: No current particle intersection in 'gsys2roughbsys'!\n");
-        *bcx = -999999;  *bcy = -999999;  *bcz = -999999; //If there is an error then we return something which should produce a geometry error.
-        return;
-    }
-    
-    normal(&nx,&ny,&nz); //Calculate normal at current point of intersection. [Bounce system x-axis.]
-    //printf("Normal vector: (%f,%f,%f).\n", nx, ny, nz);
-    
-    normmag = sqrt(pow(nx,2)+pow(ny,2)+pow(nz,2));                                    //calculate length of normal vector
-    normtheta = atan2(sqrt(pow(nx,2)+pow(nz,2)), ny);                               //define inclination angle from x-axis
-    normphi = atan2(nz, nx);                                                       //define azimuthal angle from y-axis
-    finaltheta = normtheta + randtheta;                                           //tilt normal inclination
-    finalphi = normphi + randphi;                                                //rotate normal azimuth
-    
-    nx = normmag*sin(finaltheta)*cos(finalphi);                                     //set new direction for normal
-    ny = normmag*cos(finaltheta);
-    nz = normmag*sin(finaltheta)*sin(finalphi);
-    
-    //printf("Randomized normal vector: (%f,%f,%f).\n", nx, ny, nz);
-
-    
-    //Generate a unit vector perpendicular to the unit normal. [Bounce system's z-axis.]
-    if(timezero(ny) != 0. || timezero(nz) != 0.) {  //We may generate a perpendicular vector by crossing the normal with the global x-hat vector.
-        lx = 0.;
-        ly = nz;
-        lz = -ny;
-        mag = sqrt(pow(ly,2)+pow(lz,2));
-        ly = ly/mag;
-        lz = lz/mag;
-    }
-    if(timezero(nx) != 0. || timezero(nz) != 0.) {  //We may generate a perpendicular vector by crossing the normal with the global y-hat vector.
-        lx = -nz;
-        ly = 0.;
-        lz = nx;
-        mag = sqrt(pow(lx,2)+pow(lz,2));
-        lx = lx/mag;
-        lz = lz/mag;
-    }
-    
-    //Take the cross product (n-hat x l-hat) to create a unit vector perpendicular to both the normal and "longitudinal" unit vectors. [Bounce system's y-axis.]
-    tx = ny*lz - nz*ly;
-    ty = -nx*lz + nz*lx;
-    tz = nx*ly - ny*lx;
-    
-    //Calculate the components of the given vector in the bounce system by taking the vector's projections on the bounce system's basis vectors.
-    *bcx = gcx*nx + gcy*ny + gcz*nz;
-    *bcy = gcx*tx + gcy*ty + gcz*tz;
-    *bcz = gcx*lx + gcy*ly + gcz*lz;
-    
-    return;
-}
-
 void bsys2gsys(double bcx,double bcy,double bcz,double *gcx,double *gcy,double *gcz) {
   double nx,ny,nz,lx,ly,lz,tx,ty,tz,mag;
   
@@ -2695,7 +2621,6 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
         if (cpcode == 2) {//the surface has a defined roughness
           cprandperturb();
         }
-        
         return 0;
       }
       if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
@@ -2704,7 +2629,9 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
           printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component!\n",neutron.num);
           return -1; //Abandon the particle.
         }
+        
         vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
+        
         bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new velocity back into the global system.
         
         if (cpcode == 2) {//the surface has a defined roughness
@@ -2966,8 +2893,11 @@ void cprandperturb(void) { //created by Erik Lutz
   double thetaf, phif;
   
   //printf("Rough surface encountered.\n");
+  //printf("neutron.xcode = %d.\n", neutron.xcode);
   
   gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vny,&vnz);
+  
+  //printf("\ninitial vnx = %f.\n", vnx);
   
   v = sqrt(pow(vnx,2)+pow(vny,2)+pow(vnz,2));
   
@@ -3017,7 +2947,7 @@ void cprandperturb(void) { //created by Erik Lutz
   //printf("Check 1.\n");
 
   if (vnx > 0) { //particle is above cut-plane
-    while (thetaf > PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+    while (cos(thetaf) < 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
       
       randthetaseed = grn();
       randphiseed = grn();
@@ -3065,7 +2995,7 @@ void cprandperturb(void) { //created by Erik Lutz
   //printf("Check 1.1.\n");
   
   if (vnx < 0) { //particle is below cut-plane
-    while (thetaf < PI/2.) { //particle has been perturbed through cut-plane, so choose another random value and try again
+    while (cos(thetaf) > 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
       
       randthetaseed = grn();
       randphiseed = grn();
@@ -3107,12 +3037,14 @@ void cprandperturb(void) { //created by Erik Lutz
   }
   
   //printf("Check 2.\n");
-  printf("Theta: %f --> %f. Phi: %f --> %f.\n", theta*180/PI, thetaf*180/PI, phi*180/PI, phif*180/PI);
+  //printf("Theta: %f --> %f. Phi: %f --> %f.\n", theta*180/PI, thetaf*180/PI, phi*180/PI, phif*180/PI);
   
   //apply new direction to vector
   vnx = v*cos(thetaf);
   vny = v*sin(thetaf)*cos(phif);
   vnz = v*sin(thetaf)*sin(phif);
+  
+  //printf("final vnx = %f.\n\n", vnx);
   
   bsys2gsys(vnx,vny,vnz,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new direction back into the global system.
   
