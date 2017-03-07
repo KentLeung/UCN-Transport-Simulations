@@ -26,7 +26,7 @@ region # = 0 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code =
 
 region # = 1 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
 
-region # = 2 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+region # = 2 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
 
 region # = 3 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
 
