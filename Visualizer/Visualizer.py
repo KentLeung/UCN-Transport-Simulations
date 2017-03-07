@@ -78,6 +78,7 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
                 finalevents.append(i)
 
     savetxt('traj.txt', finalevents, fmt='%i,%f,%f,%f')
-    savetxt('errorpoints.txt', errorpoints, fmt='%f,%f,%f')
+    if not (len(errorpoints) == 0):
+        savetxt('errorpoints.txt', errorpoints, fmt='%f,%f,%f')
 
 visualize(regionfile, eventsfile, trajyn, trajfrac)
