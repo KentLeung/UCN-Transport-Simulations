@@ -12,13 +12,13 @@
 #define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
-#define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
+#define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
 #define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
 #define REGFILE "Regionfile"  //The name of the 'regions' file to be read.
 #define CONFILE "Connexfile"  //The name of the 'connex' file to be read.
-#define RSEED 3  //Random seed for the random number generator, which should be an unsigned integer.
+#define RSEED "RAND"  //Random seed for the random number generator, which should be an unsigned integer or "RAND" if a new seed is desired each simulation
 #define MZERO 1e-10  //The zero boundary value used in 'mathzero' to control roundoff error.
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
 #define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
@@ -34,6 +34,8 @@
 #define hBAR 1.05457e-34 //Plank's constant over 2pi in [J*s]
 #define neV2J 1.602177e-28 //Conversion factor from neV to Joules
 
+
+time_t time(time_t *t); //declare time() so that it can be used to generate a new random seed each simulation if that option is specified
 
 struct complex {  //Structure to hold a complex number for use in 'solve3' and 'ccuberoot'.
     double r;
@@ -298,6 +300,7 @@ int main(int argc, char *argv[]) {
     strcat(pathDetectorsSimFile, "detectors.sim"); /* add the extension */
     
     geomread(pathRegFile,pathConFile);
+    printf("+Geometry data successfully read from '%s'.\n",argv[1]);
     geomprint(geomoutSimFile);
     simexec(pathEventsSimFile,pathDetectorsSimFile,counts);
     return 0;
@@ -367,27 +370,33 @@ int main(int argc, char *argv[]) {
 }
 
 int simexec(char *eventsfn,char *detectorsfn,int *counts) {
+  time_t randomseed;
   time_t *calendartime; //time_t is variable type appropriate for reading the calendar time from the system.
   struct tm *loctime; //tm is a pre-defined structure for holding the local time.
   //loctime = localtime(calendartime); //Converts the calendar time into the local time tm-structure.
   char *timestamp;
   char skip[500];
   //timestamp = asctime(loctime); //Takes info. from tm-structure and makes a character string with date/time.
-  srand(RSEED); //Set the random seed to 'RSEED' specified in header.
+  
+  if (RSEED == "RAND") randomseed = time(NULL); //choose a new seed for the random number generator each time
+  
+  srand(randomseed); //Set the random seed to 'RSEED' specified in header or to a random number each time if that is specified
   detectorsfp = fopen(detectorsfn,"w+"); //Open the 'detectors' file.
   eventsfp = fopen(eventsfn,"w+"); //Open the 'events' file.
-  fprintf(eventsfp,"#Neutrons Propagated = %d | Random Seed = %d\n",N,RSEED); //Put header into events file.
+  fprintf(eventsfp,"#Neutrons Propagated = %d | Random Seed = %ld\n",N,randomseed); //Put header into events file.
   //fprintf(eventsfp,"#Lost Particle Tally:      of the particles propagated through the geometry were lost unphysically.                           \n\n");
   fprintf(eventsfp,"#Neutron# | ecode | Reg# | xcode |     t     |     x     |     y     |     z     |     vx    |     vy    |     vz    |");
   fprintf(eventsfp,"   Spinz   |   Data1   |   Data2   |   Data3   |\n");
     
   //printf("\nBegin Simulation... %s\n\n",timestamp);
   printf("+There will be %d neutrons propagated through the geometry.\n",N);
-  printf("+Random seed is %d.\n",RSEED);
+  printf("+Random seed is %ld.\n\n\n",randomseed);
+  
+  if (CONSOLE == "ON") printf("\nBEGIN CONSOLE-----------------------------------------------------------------------------------\n");
   
 //-------------------------------------------------BEGIN SIMULATION LOGIC--------------------------------------------------//
   int its,n,ecode,i,j,lost,bcode,cpcode;
-  int detectors[5000][10]; //Array to hold detector hits. It currently allows .1s resolution over a 5min. run and provides slots for up to five detectors.
+  int detectors[5000][10]; //Array to hold detector hits. It currently allows .1s resolution over a 5min. run and provides slots for up to ten detectors.
   
   for(i=0 ; i < 5000 ; i++) {  //Zero the 'detectors' array.
     for(j=0 ; j < 10 ; j++) {
@@ -467,8 +476,18 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
   recdet(detectors,counts); //Record the detectors' histograms in a data file.
 //-------------------------------------------------END SIMULATION LOGIC----------------------------------------------------//
   
+  if (CONSOLE == "ON") printf("END CONSOLE-----------------------------------------------------------------------------------");
+  printf("\n\n");
   printf("+Final Lost Particle Tally: %f%% (%d) of the particles propagated through the geometry were lost unphysically during this simulation.\n",(float)lost/N*100.,lost);
   printf("\n\n");
+  
+  printf("Total Counts:\n");
+  for(i=0 ; i < 10 ; i++) printf("Detector %d -> %d\n",(i+1),counts[i]);
+  printf("\n\n");
+  
+  printf("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+  printf("##################################################################################################\n");
+  
   rewind(eventsfp); //Back to the beginning of 'events' so we can record lost particle percentage.
   fgets(skip,500,eventsfp); //Skip header line already in place.
   //fprintf(eventsfp,"#Lost Particle Tally: %f%% of the particles propagated through the geometry were lost unphysically.",(float)lost/N*100.);
@@ -528,7 +547,7 @@ void geomprint(char *geomoutfn) {
   
   fclose(geomoutfp);
 
-  printf("+Geometry data written to 'geomout.sim'.\n");
+  //printf("+Geometry data written to 'geomout.sim'.\n");
   return;
 }
 
@@ -595,7 +614,9 @@ void geomread(char regionsfile[20],char connexfile[20]) {
   }
   if(regflag == -1) regnum = i;
   else regnum = i-1;
-  printf("\n+There are %d regions defined.\n",regnum);
+  printf("\n\n##################################################################################################\n");
+  printf("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+  printf("\n\nUCN TRANSPORT SIMULATION\n\n+There are %d regions defined.\n",regnum);
   rewind(regionsfp);
 
 //Fill the 'rparams' array and place the region's dimensions in 'regions'.
@@ -872,7 +893,7 @@ void geomread(char regionsfile[20],char connexfile[20]) {
   
   fclose(regionsfp);
   fclose(connexfp);
-  printf("+Geometry data successfully read from '%s' and '%s'.\n",regionsfile,connexfile);
+  //printf("+Geometry data successfully read from '%s' and '%s'.\n",regionsfile,connexfile);
   
   return;
 }
@@ -1889,6 +1910,10 @@ void normal(double *nx, double *ny, double *nz) {
     return;  
   }
   
+//  if (tjunc(neutron.region) == 1 && tjunc(neutron.xcode) == -1) { //particle is at a t-junction so we must find the normal vector of the correct cutplane
+//    printf("\nRegion: %d. Xcode: %d.\n",neutron.region, neutron.xcode);
+//  }
+  
   //Intersection is with a cut-plane.
   //Get the basepoint for the region associated with the cut-plane and the orientation of the cutplane.
   bpx = basepoints[neutron.xcode][0];
@@ -2052,7 +2077,9 @@ double intersection(int *eventcode, double traj[3][3], int *intrsct) {
   
   if((int)cplanes[neutron.region][4] == 3 || (int)cplanes[neutron.region][4] == 4) {  //Particle is in a region which T's into another region, i.e. ends in the side
                                                                                      //of a main region, so we must check for intersections with that actual region.
-    if((int)cplanes[neutron.region][4] == 3) conreg = connex[neutron.region][0]; //The current region begins at a main section so that the region with which we 
+    if (CHECK == "ON") printf("+WARNING: Handling transport from region T'ing into another region, see line 2060.\n");
+                                //beware unanticipated consequences of changing the below line from 'conreg = connex[neutron.region][0]' to 'conreg = neutron.region'. -Erik Lutz
+    if((int)cplanes[neutron.region][4] == 3) conreg = neutron.region; //The current region begins at a main section so that the region with which we
                                                                                 //should check for intersections is the first in the current region's 'connex' list.
     if((int)cplanes[neutron.region][4] == 4) conreg = connex[neutron.region][1]; //The current region ends at a main section so that the region with which we should
                                                                                 //check for intersections is the second in the current region's 'connex' list.
@@ -2526,7 +2553,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
     if(regions[neutron.region][0] != regions[regf][0]) {
       printf("+WARNING: Special-handling code 5 used at a connection involving two regions of different type!\n");
     }
-    if(regions[neutron.region][4] != regions[regf][4] || regions[neutron.region][5] != regions[regf][5] || regions[neutron.region][6] != regions[regf][6]) {
+    if((regions[neutron.region][4] != regions[regf][4] || regions[neutron.region][5] != regions[regf][5] || regions[neutron.region][6] != regions[regf][6]) && CONSOLE == "ON") {
       printf("+WARNING: A lip (special-handling code 5) has been specified between two regions that have diferent orientations!\nNeutron is leaving region %d and entering region %d.\n", neutron.region, regf);
     }
     if(regions[regf][0] == 2) {  //The connection is between cylinder-regions.

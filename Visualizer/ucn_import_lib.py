@@ -14,9 +14,9 @@ def read_regions(regionsfile):
   
   regionsfile.close()
   
+  rawtext = rawtext.replace('<','*') #deals with T-connection special characters
   rawtext = rawtext.replace('*','-1,-1,-1') #allows map() to be called later.
   rawtext = rawtext.replace('>','') #deals with T-connection special characters
-  rawtext = rawtext.replace('<','*') #deals with T-connection special characters
   rawtext = rawtext.replace(' ',',') #Convert into pseudo-csv file
   for i in range(0,7):
     rawtext = rawtext.replace(',,',',') #Make csv nicely delimited

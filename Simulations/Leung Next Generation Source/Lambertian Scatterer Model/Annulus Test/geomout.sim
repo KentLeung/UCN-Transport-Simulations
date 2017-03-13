@@ -1,0 +1,45 @@
+regions:
+
+region# = 0 | surface type = 2.000000 | Dimx or Diameter = 0.360000 | Dimy or Length = 0.400000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 1 | surface type = 2.000000 | Dimx or Diameter = 0.360000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 2 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.300000 | Dimz = 0.000000 | psi = 0.000000 | theta = 3.141593 | phi = 0.000000
+
+
+basepoints:
+
+region# 0 --> bpx = 0.000000 | bpy = 0.000000 | bpz = 0.000000
+
+region# 1 --> bpx = 0.000000 | bpy = 0.000000 | bpz = 0.400000
+
+region# 2 --> bpx = 0.000000 | bpy = 0.000000 | bpz = 0.500000
+
+
+cplanes:
+
+region # = 0 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = 6 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 1 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = 6 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 2 | psi = 0.000000 | theta = 3.141593 | phi = 0.000000 | s.h. code = 6 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+
+rparams:
+
+0.000000|0.000000|0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|2.870000e-01|1.000000|1.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|2.870000e-01|2.000000|1.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|9999.000000|0.000000e+00|9.999000e+03|3.000000|1.000000|0.000000|0.000000|0.000000
+
+
+connex:
+
+region 0 --> 0 and 1 and 2 and -1 and 0 and 0
+
+region 1 --> 0 and -1 and 0 and 0 and 0 and 0
+
+region 2 --> 2 and -1 and 0 and 0 and 0 and 0
+
+

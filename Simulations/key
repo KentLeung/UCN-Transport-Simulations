@@ -123,9 +123,9 @@ Format for 'connex':
   
   Pre-programmed special handling codes are:
                                              1    => Cut-plane is 100% absorptive
-                                             2(x) => Cut-plane is modeled with surface roughness. x [0,1] is a parameter passed to cplanes[reg][3] and defines a weighted probability distribution
-                                                     for the amount that a particles bounce is deflected by the surface. Amount = grn()^(1/x). x=0 will create a totally flat surface
-                                                     and x = 1 will create a surface which scatters particles isotropically into a hemisphere above it.
+                                             2(x) => Cut-plane is modeled with surface roughness. x (0,2] is a parameter passed to cplanes[reg][3] and defines a weighted probability distribution
+                                                    for the amount that a particles bounce is deflected by the surface. Amount = grn()^(1/x) for x in [0,1] and Amount = grn()*1/(x-1) for x in [1,2]. x->0
+                                                    will create a totally flat surface and x = 1,2 will create a surface which scatters particles isotropically into a hemisphere above it. (Erik Lutz)
                                              3    => Cut-plane represents a spin-flip resonance. Spin-flip efficiencies are defined in the handling routine.
                                              4    => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
                                              5    => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
