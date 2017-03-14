@@ -4,9 +4,9 @@ region# = 0 | surface type = 2.000000 | Dimx or Diameter = 0.360000 | Dimy or Le
 
 region# = 1 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.010000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
 
-region# = 2 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.890000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+region# = 2 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.850000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
 
-region# = 3 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.000100 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+region# = 3 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.040000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
 
 region# = 4 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.110000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.314159 | phi = 0.000000
 
@@ -37,23 +37,23 @@ region# 1 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 0.400000
 
 region# 2 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 0.410000
 
-region# 3 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.300000
+region# 3 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.260000
 
-region# 4 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.300100
+region# 4 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.300000
 
-region# 5 --> bpx = 0.000000 | bpy = -0.113992 | bpz = 1.404716
+region# 5 --> bpx = 0.000000 | bpy = -0.113992 | bpz = 1.404616
 
-region# 6 --> bpx = 0.000000 | bpy = -0.178648 | bpz = 1.493708
+region# 6 --> bpx = 0.000000 | bpy = -0.178648 | bpz = 1.493608
 
-region# 7 --> bpx = 0.000000 | bpy = -0.267640 | bpz = 1.558364
+region# 7 --> bpx = 0.000000 | bpy = -0.267640 | bpz = 1.558264
 
-region# 8 --> bpx = 0.000000 | bpy = -0.372256 | bpz = 1.592356
+region# 8 --> bpx = 0.000000 | bpy = -0.372256 | bpz = 1.592256
 
-region# 9 --> bpx = 0.000000 | bpy = -0.422256 | bpz = 1.592356
+region# 9 --> bpx = 0.000000 | bpy = -0.422256 | bpz = 1.592256
 
-region# 10 --> bpx = 0.000000 | bpy = -0.422356 | bpz = 1.592356
+region# 10 --> bpx = 0.000000 | bpy = -0.422356 | bpz = 1.592256
 
-region# 11 --> bpx = 0.000000 | bpy = -0.472356 | bpz = 1.592356
+region# 11 --> bpx = 0.000000 | bpy = -0.472356 | bpz = 1.592256
 
 region# 12 --> bpx = 0.000000 | bpy = -0.023431 | bpz = 1.100000
 

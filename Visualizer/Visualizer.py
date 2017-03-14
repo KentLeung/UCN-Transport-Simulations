@@ -13,11 +13,17 @@ trajfrac = 1
 
 if len(sys.argv) == 2:
     regionfile = sys.argv[1]
+elif len(sys.argv) == 5:
+    regionfile = sys.argv[1]
+    eventsfile = sys.argv[2]
+    trajfrac = float(sys.argv[3])
+    cleanorerrors = sys.argv[4]
 else:
     regionfile = sys.argv[1]
     eventsfile = sys.argv[2]
     trajfrac = float(sys.argv[3])
     cleanorerrors = sys.argv[4]
+    particles = list(map(int,sys.argv[5].split(',')))
 
 
 def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
@@ -30,10 +36,10 @@ def visualize(regionfile, eventsfile, trajyn, trajfrac):#run the visualizer
     
     pieces[-1].color=vs.color.blue
     
-    if len(sys.argv) == 5:
+    if len(sys.argv) >= 5:
         eventstotrajectories(eventsfile)
         hitplaces = ucni.read_simfile('traj.txt');
-        trails = ucnr.draw_simfile(hitplaces,min(trajfrac,max(trajfrac,0)));
+        trails = ucnr.draw_simfile(hitplaces,trajfrac);
 #       if cleanorerrors == 'errors': draw error points
 #           errorpoints = ucnr.draw_errorpoints()
 def eventstotrajectories(filename): #Convert events.sim file to an acceptable trajectory file
@@ -67,14 +73,20 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
 
     finalevents = [];
 
-    if cleanorerrors == 'clean':
-        for i in events:
-            if i[0] not in errors:
-                finalevents.append(i)
+    if len(sys.argv) == 5:
+        if cleanorerrors == 'clean':
+            for i in events:
+                if i[0] not in errors:
+                    finalevents.append(i)
 
-    if cleanorerrors == 'errors':
+        if cleanorerrors == 'errors':
+            for i in events:
+                if i[0] in errors:
+                    finalevents.append(i)
+    elif len(sys.argv) == 6:
+        trajfrac = 1
         for i in events:
-            if i[0] in errors:
+            if i[0] in particles:
                 finalevents.append(i)
 
     savetxt('traj.txt', finalevents, fmt='%i,%f,%f,%f')

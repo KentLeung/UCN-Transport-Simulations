@@ -1,10 +1,10 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf760
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid1\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid2\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
-\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\margl1440\margr1440\vieww13620\viewh8400\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 This is the vPython visualizer for geometries and neutron paths. The original code is by Adam Holley and has since been altered by Erik Lutz to add more features.\
@@ -17,13 +17,14 @@ Visualizer.py: This is the main visualizer code. run it from the bash command li
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\pardirnatural\partightenfactor0
 \ls1\ilvl0\cf0 {\listtext	\uc0\u8259 	}to run it with trajectories:\
 \pard\tx940\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li1440\fi-1440\pardirnatural\partightenfactor0
-\ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}python Visualizer.py \'93/pathtoregionfile\'94 \'93/pathtoevents.sim\'94  fractiontoplot cleanorerrors\
+\ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}python Visualizer.py \'93/pathtoregionfile\'94 \'93/pathtoevents.sim\'94  fractiontoplot cleanorerrors [x,y,z,\'85]\
 {\listtext	\uc0\u8259 	}where fractiontoplot is the fraction of trajectories for the visualizer to plot\
 {\listtext	\uc0\u8259 	}cleanorerrors is either \'91clean\'92 or \'91errors\'92 depending on which trajectories you want to plot\
-{\listtext	\uc0\u8259 	}include the quotations\
+{\listtext	\uc0\u8259 	}x,y,z are optional arguments to choose a specific path to plot (i.e. if you want to see the path for particle 38 just put \'9338\'94, if you want to see the path for particles 4, 6, and 78, put \'934,6,78\'94 with no spaces)\
+{\listtext	\uc0\u8259 	}include the quotations (not for x,y,z though)\
 {\listtext	\uc0\u8259 	}
 \i\b pro tip on a mac you can drag a file into the terminal and it will paste its location in. This makes adding the paths to the command line much easier. if you do this you don\'92t need to include parenthesis
 \i0\b0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
-draw_errors: draws neutrons lost unphysically, I (Erik Lutz) have not worked a lot with this yet and so you will have to figure it out yourself, also haven\'92t implemented the GUI here}
+draw_errors: draws neutrons lost unphysically, I (Erik Lutz) have not worked a lot with this yet and so you will have to figure it out yourself. Errors can be drawn in the Visualizer.py code but I believe this code gives more information.}
