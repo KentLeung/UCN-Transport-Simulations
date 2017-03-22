@@ -420,7 +420,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(0,0,0,0); //Create the particle.
+    poof(0,grn()*0.039,0,0); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -626,7 +626,7 @@ void geomread(char regionsfile[20],char connexfile[20]) {
   fgets(skip,500,regionsfp); //Skip the header line.
   for(i=0 ; i < regnum ; i++) {
     fscanf(regionsfp,"%d %d %s",&reg,&surftype,skip); //Get region number and surface type and skip over to the region's dimesnions.
-    if((surftype != 1) && (surftype != 2) && (surftype != 3)) printf("+ERROR: Undefined Region Type!");
+    if((surftype != 1) && (surftype != 2) && (surftype != 3)) printf("+ERROR: Undefined Region Type!\n");
     regions[reg][0] = (double)surftype; //Place this region's surface type into 'regions'.
     if(surftype == 1) {
       fscanf(regionsfp,"%lf,%lf,%lf %s",&regions[reg][1],&regions[reg][2],&regions[reg][3],skip);
