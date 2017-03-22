@@ -12,9 +12,11 @@ region# = 4 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Le
 
 region# = 5 | surface type = 2.000000 | Dimx or Diameter = 0.180000 | Dimy or Length = 0.100000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
 
-region# = 6 | surface type = 2.000000 | Dimx or Diameter = 0.050000 | Dimy or Length = 0.053542 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+region# = 6 | surface type = 2.000000 | Dimx or Diameter = 0.140000 | Dimy or Length = 0.043431 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
 
-region# = 7 | surface type = 2.000000 | Dimx or Diameter = 0.050000 | Dimy or Length = 0.000100 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+region# = 7 | surface type = 2.000000 | Dimx or Diameter = 0.140000 | Dimy or Length = 0.040000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 8 | surface type = 2.000000 | Dimx or Diameter = 0.140000 | Dimy or Length = 0.020000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
 
 
 basepoints:
@@ -31,9 +33,11 @@ region# 4 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.300100
 
 region# 5 --> bpx = 0.000000 | bpy = -0.080000 | bpz = 1.400100
 
-region# 6 --> bpx = 0.000000 | bpy = 0.006458 | bpz = 1.100000
+region# 6 --> bpx = 0.000000 | bpy = -0.023431 | bpz = 1.100000
 
-region# 7 --> bpx = 0.000000 | bpy = 0.060000 | bpz = 1.100000
+region# 7 --> bpx = 0.000000 | bpy = 0.020000 | bpz = 1.100000
+
+region# 8 --> bpx = 0.000000 | bpy = 0.060000 | bpz = 1.100000
 
 
 cplanes:
@@ -50,9 +54,11 @@ region # = 4 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = 
 
 region # = 5 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
 
-region # = 6 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 3 | T cut-plane offset = 0.003542 | s.h. 2 value = 0
+region # = 6 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 3 | T cut-plane offset = 0.033431 | s.h. 2 value = 0
 
-region # = 7 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 6 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+region # = 7 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 7 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 8 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
 
 
 rparams:
@@ -69,9 +75,11 @@ rparams:
 
 0.000000|0.000000|0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|0.000000|0.000000e+00|9.999000e+03|0.000000|1.000000|0.000000|0.000000|0.000000
 
-0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|2.870000e-01|0.000000|1.000000|0.000000|0.000000|0.000000
+0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|3.000000e+00|1.000000|1.000000|0.000000|0.000000|0.000000
 
-0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|2.870000e-01|0.000000|1.000000|0.000000|0.000000|0.000000
+0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|3.000000e+00|2.000000|1.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.900000|5.000000e-04|1.000000e-06|335.000000|18.500000|0.000000e+00|9.999000e+03|3.000000|1.000000|0.000000|0.000000|0.000000
 
 
 connex:
@@ -90,6 +98,8 @@ region 5 --> 4 and -1 and 0 and 0 and 0 and 0
 
 region 6 --> 2 and 7 and -1 and 0 and 0 and 0
 
-region 7 --> 6 and -1 and 0 and 0 and 0 and 0
+region 7 --> 6 and 8 and -1 and 0 and 0 and 0
+
+region 8 --> 7 and -1 and 0 and 0 and 0 and 0
 
 

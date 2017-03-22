@@ -2605,9 +2605,23 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
   
   if (cpcode == 7) { //cutplane has a spherical aperature (must have this positioned before cpcode = 6 and -1 so that they can be called depending on particle position). Made by Erik Lutz
     
-    gsys2bsys(neutron.x,neutron.y,neutron.z,&xb,&yb,&zb); //transform to bounce frame
+    //printf("We got a sevener!\n");
+    
+    //printf("(%f,%f,%f)\n",neutron.x,neutron.y,neutron.z);
+    
+    xb = neutron.x - basepoints[neutron.xcode][0]; //translate to basepoint
+    yb = neutron.y - basepoints[neutron.xcode][1];
+    zb = neutron.z - basepoints[neutron.xcode][2];
+    gsys2bsys(xb,yb,zb,&xb,&yb,&zb); //transform to bounce frame
+    
+    //printf("(%f,%f,%f)\n",xb,yb,zb);
+    
     raperature = cplanes[neutron.xcode][3]; //get radius of aperature
     rparticle = sqrt(pow(yb,2)+pow(zb,2)); //calculate distance from center of cutplane
+    
+    //printf("(%f,%f)\n",raperature,rparticle);
+    
+    if (2*raperature > regions[neutron.xcode][1]) raperature = regions[neutron.xcode][1]/2.; //aperature cannot be bigger than region
     
     if (rparticle <  raperature) cpcode = -1; //particle is within aperature so pass it through
     if (rparticle >= raperature) cpcode = 6; //particle is outside of aperature so bounce it back
@@ -2616,6 +2630,8 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       if(CONSOLE == "ON") printf("Particle lost unphysically on an aperature cutplane");
       return -1;
     }
+    
+    //printf("Got through the sevener! cpcode = %d.\n", cpcode);
     
   }
   
@@ -2631,6 +2647,8 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
       if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
   }
+  
+  
 
   if(cpcode == -1 || cpcode == 2) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
                                     //OR the surface has a defined surface roughness, implemented by Erik Lutz
