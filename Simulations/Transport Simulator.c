@@ -386,7 +386,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
   fprintf(eventsfp,"#Neutrons Propagated = %d | Random Seed = %ld\n",N,randomseed); //Put header into events file.
   //fprintf(eventsfp,"#Lost Particle Tally:      of the particles propagated through the geometry were lost unphysically.                           \n\n");
   fprintf(eventsfp,"#Neutron# | ecode | Reg# | xcode |     t     |     x     |     y     |     z     |     vx    |     vy    |     vz    |");
-  fprintf(eventsfp,"   Spinz   |   Data1   |   Data2   |   Data3   |\n");
+  fprintf(eventsfp,"   Spinz   |   Data1   |   Data2   |   Data3   |   Data4   |\n");
     
   //printf("\nBegin Simulation... %s\n\n",timestamp);
   printf("+There will be %d neutrons propagated through the geometry.\n",N);
@@ -420,7 +420,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(0,grn()*0.039,0,0); //Create the particle.
+    poof(0,0,0,0); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -2906,10 +2906,10 @@ int paramadjust(char action[5],char pname[10],int startreg,int endreg,double pva
 
 void event(int eventcode,double data1,double data2,double data3, double data4) {
   
-  fprintf(eventsfp," %d          %d       %d      %d",neutron.num,eventcode,neutron.region,neutron.xcode);
-  fprintf(eventsfp,"      %f    %f    %f    %f",neutron.t,neutron.x,neutron.y,neutron.z);
-  fprintf(eventsfp,"   %f    %f    %f",neutron.vx,neutron.vy,neutron.vz);
-  fprintf(eventsfp,"   %f    %f    %f    %f\n",neutron.spin[2],data1,data2,data3);
+  fprintf(eventsfp,"%-11d %-7d %-6d %-9d",neutron.num,eventcode,neutron.region,neutron.xcode);
+  fprintf(eventsfp,"%-10f %-11f %-11f %-12f",neutron.t,neutron.x,neutron.y,neutron.z);
+  fprintf(eventsfp,"%-11f %-12f %-12f",neutron.vx,neutron.vy,neutron.vz);
+  fprintf(eventsfp,"%-11f %-11f %-11f %-11f %-12f\n",neutron.spin[2],data1,data2,data3,data4);
   return;
 }
 
