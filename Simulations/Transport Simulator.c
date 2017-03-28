@@ -12,7 +12,7 @@
 #define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
-#define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
+#define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
 #define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
