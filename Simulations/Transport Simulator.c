@@ -23,6 +23,7 @@
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
 #define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
 #define VCUTOFF 8.0  //Cut-off speed for a v^2 dv speed dsitribution.
+#define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
 #define SHUTTERTIME 0 //Time when the shutter opens.
 
@@ -123,6 +124,7 @@ void poof(int,double,int,int); //Function to create a particle. The first two ar
                     //The third argument allows one to select from different speed distributions:
                    //          0 => A v^2 dv distribution of speeds with cutoff defined in header.
                   //           1 => A distribution (defined in the function) to be calculated via the Monte Carlo method.
+                //             2 => A monoenergetic distribution with speed defined in header
                  //The fourth argument allows one to select from different angular distributions:
                 //             0 => A cos weighted isotropic distribution (appropriate for isotropic illumination of a plane) directed into 2pi into the region.
                //              1 => A truly isotropic distribution directed into 4pi: sin(theta) d(theta) d(phi), i.e. no cos weighting.
@@ -1362,6 +1364,10 @@ void poof(int startregion, double poofplaneD, int vdistcode, int adistcode) {
       PofV = 3./pow(vcutoff,3) * pow(v,2);
       if (test < PofV) mcflag = 1;
     }
+  }
+  if (vdistcode == 2) {  //We want a monoenergetic energy distribution
+    vdistflag = -1; //code recognized
+    v = MONOENERGY
   }
     
   //Find the pre-rotated components of the velocity.

@@ -1,0 +1,6 @@
+connex: The first region should be region 0, and a special-handling code must be used to specify how to treat its cut-plane.
+-----------------------------------------------------------------------------------------------------------------------------
+Region#     Connects through its own cut-plane to:     AND also to:     AND also to:     AND also to:     AND also to:     AND also to:
+0,6         0                                             1/
+1,4         0                                             2/
+2,4         1/
