@@ -1375,7 +1375,7 @@ void poof(int startregion, double poofplaneD, int vdistcode, int adistcode) {
   neutron.vz = vzr;
 
   //if(EVENTS == "ON") event(14,cosrangle1,rangle2,v,0); //Write an event for the creation of a particle.
-  event(14,cosrangle1,rangle2,.5*nMASS*(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2))/neV2J,0); //Write an event for the creation of a particle.
+  event(14,cosrangle1,rangle2,.5*nMASS*(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2))/neV2J,.5*nMASS*pow(vz,2)/neV2J); //Write an event for the creation of a particle.
   
   
   if(vdistflag != -1 || adistflag != -1) printf("+ERROR: Code for particle velocity distribution not recognized in 'poof'!\n");
@@ -2534,6 +2534,7 @@ int cplanehandling(void) {
 //    cpcode = -1; //Set the cut-plane code to -1 so that the particle will be passed through below. (Cut-plane detectors are passive detectors!)
 //  }
 if(cpcode == 4) {  //Cut-plane is a detector that also records angular information.
+    gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb);
 	thetar = regions[neutron.region][4];
 	phir = regions[neutron.region][5];
 	psir = regions[neutron.region][6];
@@ -2545,7 +2546,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       //for(i=0 ; i < 3000 ; i++) if(pangle >= PI/(2.*3000.) * i && pangle < PI/(2.*3000.) * (i+1)) detectors[i][0]++;
       //Increment the correct bin in 'detectors[][1]' for the corresponding time of detection.
       //for(i=0 ; i < 3000 ; i++) if(neutron.t >= i/10. && neutron.t < (i+1)/10.) detectors[i][1]++;
-    event(18,neutron.xcode,cos(pangleloc),.5*nMASS*(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2))/neV2J,0); //Record a detection event keyed to cut-plane number.
+    event(18,neutron.xcode,cos(pangleloc),.5*nMASS*(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2))/neV2J,.5*nMASS*pow(vn,2)/neV2J); //Record a detection event keyed to cut-plane number.
     cpcode = -1; //Set the cut-plane code to -1 so that the particle will be passed through below. (Cut-plane detectors are passive detectors!)
   }
   
