@@ -23,7 +23,7 @@
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
 #define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
 #define VCUTOFF 8.0  //Cut-off speed for a v^2 dv speed dsitribution.
-#define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
+#define MONOENERGY 8.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
 #define SHUTTERTIME 0 //Time when the shutter opens.
 
@@ -422,7 +422,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(0,0,0,0); //Create the particle.
+    poof(1,grn()*0.039,0,0); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -1367,7 +1367,7 @@ void poof(int startregion, double poofplaneD, int vdistcode, int adistcode) {
   }
   if (vdistcode == 2) {  //We want a monoenergetic energy distribution
     vdistflag = -1; //code recognized
-    v = MONOENERGY
+    v = MONOENERGY;
   }
     
   //Find the pre-rotated components of the velocity.
@@ -2540,7 +2540,7 @@ int cplanehandling(void) {
 //    cpcode = -1; //Set the cut-plane code to -1 so that the particle will be passed through below. (Cut-plane detectors are passive detectors!)
 //  }
 if(cpcode == 4) {  //Cut-plane is a detector that also records angular information.
-    gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb);
+  gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb);
 	thetar = regions[neutron.region][4];
 	phir = regions[neutron.region][5];
 	psir = regions[neutron.region][6];
