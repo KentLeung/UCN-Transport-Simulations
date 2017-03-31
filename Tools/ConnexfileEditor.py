@@ -16,7 +16,7 @@ if num >= 10:
         output.append("{:d}{:11d}{:46d}/\n".format(i,i-1,i+1))
     output.append("{:d}{:11d}/\n".format(num,num-1))
 else:
-    output.append("{:d}{:12d}/\n".format(num,num-1))
+    output.append("{:d}{:12./d}/\n".format(num,num-1))
 
 
 file = open(sys.argv[1], "w")

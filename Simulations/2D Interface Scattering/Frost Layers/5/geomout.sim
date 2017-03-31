@@ -1,0 +1,655 @@
+regions:
+
+region# = 0 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.010000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 1 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.039000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 2 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 3 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 4 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 5 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 6 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 7 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 8 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 9 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 10 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 11 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 12 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 13 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 14 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 15 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 16 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 17 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 18 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 19 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 20 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 21 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 22 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 23 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 24 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 25 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 26 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 27 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 28 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 29 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 30 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 31 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 32 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 33 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 34 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 35 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 36 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 37 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 38 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 39 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 40 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 41 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 42 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.310000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 43 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.140000 | Dimz = 0.000000 | psi = 0.000000 | theta = -0.872665 | phi = 0.000000
+
+region# = 44 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.130000 | Dimz = 0.000000 | psi = 0.000000 | theta = -0.506145 | phi = 0.000000
+
+region# = 45 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.330000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 46 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000050 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 47 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.263220 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 48 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 49 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000
+
+region# = 50 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.872665 | theta = -0.066323 | phi = 0.000000
+
+region# = 51 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.600000 | Dimz = 0.000000 | psi = 0.872665 | theta = -0.066323 | phi = 0.000000
+
+region# = 52 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.872665 | theta = -0.066323 | phi = 0.000000
+
+region# = 53 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.349066 | theta = -0.043633 | phi = 0.000000
+
+region# = 54 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.970000 | Dimz = 0.000000 | psi = 0.349066 | theta = -0.043633 | phi = 0.000000
+
+region# = 55 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.349066 | theta = -0.043633 | phi = 0.000000
+
+region# = 56 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 1.012291 | theta = 0.195477 | phi = 0.000000
+
+region# = 57 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.760000 | Dimz = 0.000000 | psi = 1.012291 | theta = 0.195477 | phi = 0.000000
+
+region# = 58 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 1.012291 | theta = 0.195477 | phi = 0.000000
+
+region# = 59 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.050000 | Dimz = 0.000000 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000
+
+region# = 60 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.700000 | Dimz = 0.000000 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000
+
+region# = 61 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.000050 | Dimz = 0.000000 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000
+
+region# = 62 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.010000 | Dimz = 0.000000 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000
+
+region# = 63 | surface type = 2.000000 | Dimx or Diameter = 0.160000 | Dimy or Length = 0.100000 | Dimz = 0.000000 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000
+
+
+basepoints:
+
+region# 0 --> bpx = 0.000000 | bpy = 0.000000 | bpz = 0.000000
+
+region# 1 --> bpx = 0.000000 | bpy = 0.010000 | bpz = -0.000000
+
+region# 2 --> bpx = 0.000000 | bpy = 0.049000 | bpz = -0.000000
+
+region# 3 --> bpx = 0.000000 | bpy = 0.049010 | bpz = -0.000000
+
+region# 4 --> bpx = 0.000000 | bpy = 0.049020 | bpz = -0.000000
+
+region# 5 --> bpx = 0.000000 | bpy = 0.049030 | bpz = -0.000000
+
+region# 6 --> bpx = 0.000000 | bpy = 0.049040 | bpz = -0.000000
+
+region# 7 --> bpx = 0.000000 | bpy = 0.049050 | bpz = -0.000000
+
+region# 8 --> bpx = 0.000000 | bpy = 0.049060 | bpz = -0.000000
+
+region# 9 --> bpx = 0.000000 | bpy = 0.049070 | bpz = -0.000000
+
+region# 10 --> bpx = 0.000000 | bpy = 0.049080 | bpz = -0.000000
+
+region# 11 --> bpx = 0.000000 | bpy = 0.049090 | bpz = -0.000000
+
+region# 12 --> bpx = 0.000000 | bpy = 0.049100 | bpz = -0.000000
+
+region# 13 --> bpx = 0.000000 | bpy = 0.049110 | bpz = -0.000000
+
+region# 14 --> bpx = 0.000000 | bpy = 0.049120 | bpz = -0.000000
+
+region# 15 --> bpx = 0.000000 | bpy = 0.049130 | bpz = -0.000000
+
+region# 16 --> bpx = 0.000000 | bpy = 0.049140 | bpz = -0.000000
+
+region# 17 --> bpx = 0.000000 | bpy = 0.049150 | bpz = -0.000000
+
+region# 18 --> bpx = 0.000000 | bpy = 0.049160 | bpz = -0.000000
+
+region# 19 --> bpx = 0.000000 | bpy = 0.049170 | bpz = -0.000000
+
+region# 20 --> bpx = 0.000000 | bpy = 0.049180 | bpz = -0.000000
+
+region# 21 --> bpx = 0.000000 | bpy = 0.049190 | bpz = -0.000000
+
+region# 22 --> bpx = 0.000000 | bpy = 0.049200 | bpz = -0.000000
+
+region# 23 --> bpx = 0.000000 | bpy = 0.049210 | bpz = -0.000000
+
+region# 24 --> bpx = 0.000000 | bpy = 0.049220 | bpz = -0.000000
+
+region# 25 --> bpx = 0.000000 | bpy = 0.049230 | bpz = -0.000000
+
+region# 26 --> bpx = 0.000000 | bpy = 0.049240 | bpz = -0.000000
+
+region# 27 --> bpx = 0.000000 | bpy = 0.049250 | bpz = -0.000000
+
+region# 28 --> bpx = 0.000000 | bpy = 0.049260 | bpz = -0.000000
+
+region# 29 --> bpx = 0.000000 | bpy = 0.049270 | bpz = -0.000000
+
+region# 30 --> bpx = 0.000000 | bpy = 0.049280 | bpz = -0.000000
+
+region# 31 --> bpx = 0.000000 | bpy = 0.049290 | bpz = -0.000000
+
+region# 32 --> bpx = 0.000000 | bpy = 0.049300 | bpz = -0.000000
+
+region# 33 --> bpx = 0.000000 | bpy = 0.049310 | bpz = -0.000000
+
+region# 34 --> bpx = 0.000000 | bpy = 0.049320 | bpz = -0.000000
+
+region# 35 --> bpx = 0.000000 | bpy = 0.049330 | bpz = -0.000000
+
+region# 36 --> bpx = 0.000000 | bpy = 0.049340 | bpz = -0.000000
+
+region# 37 --> bpx = 0.000000 | bpy = 0.049350 | bpz = -0.000000
+
+region# 38 --> bpx = 0.000000 | bpy = 0.049360 | bpz = -0.000000
+
+region# 39 --> bpx = 0.000000 | bpy = 0.049370 | bpz = -0.000000
+
+region# 40 --> bpx = 0.000000 | bpy = 0.049380 | bpz = -0.000000
+
+region# 41 --> bpx = 0.000000 | bpy = 0.049390 | bpz = -0.000000
+
+region# 42 --> bpx = 0.000000 | bpy = 0.049400 | bpz = -0.000000
+
+region# 43 --> bpx = 0.000000 | bpy = 0.359400 | bpz = -0.000000
+
+region# 44 --> bpx = 0.000000 | bpy = 0.466646 | bpz = 0.089990
+
+region# 45 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.203691
+
+region# 46 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.533691
+
+region# 47 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.533741
+
+region# 48 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.796961
+
+region# 49 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.846961
+
+region# 50 --> bpx = 0.000000 | bpy = 0.529671 | bpz = 0.896961
+
+region# 51 --> bpx = 0.038218 | bpy = 0.532985 | bpz = 0.929030
+
+region# 52 --> bpx = 0.496834 | bpy = 0.572750 | bpz = 1.313854
+
+region# 53 --> bpx = 0.535052 | bpy = 0.576063 | bpz = 1.345923
+
+region# 54 --> bpx = 0.552137 | bpy = 0.578244 | bpz = 1.392863
+
+region# 55 --> bpx = 0.883581 | bpy = 0.620555 | bpz = 2.303497
+
+region# 56 --> bpx = 0.900665 | bpy = 0.622736 | bpz = 2.350437
+
+region# 57 --> bpx = 0.942260 | bpy = 0.613024 | bpz = 2.376428
+
+region# 58 --> bpx = 1.574502 | bpy = 0.465406 | bpz = 2.771497
+
+region# 59 --> bpx = 1.616097 | bpy = 0.455694 | bpz = 2.797488
+
+region# 60 --> bpx = 1.633198 | bpy = 0.455694 | bpz = 2.844473
+
+region# 61 --> bpx = 1.872612 | bpy = 0.455694 | bpz = 3.502258
+
+region# 62 --> bpx = 1.872629 | bpy = 0.455694 | bpz = 3.502305
+
+region# 63 --> bpx = 1.876049 | bpy = 0.455694 | bpz = 3.511702
+
+
+cplanes:
+
+region # = 0 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 1 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 2 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 3 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 4 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 5 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 6 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 7 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 8 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 9 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 10 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 11 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 12 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 13 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 14 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 15 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 16 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 17 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 18 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 19 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 20 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 21 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 22 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 23 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 24 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 25 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 26 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 27 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 28 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 29 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 30 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 31 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 32 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 33 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 34 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 35 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 36 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 37 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 38 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 39 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 40 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 41 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 42 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 43 | psi = 0.000000 | theta = -1.221730 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 44 | psi = 0.000000 | theta = -0.689405 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 45 | psi = 0.000000 | theta = -0.253073 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 46 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 47 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 48 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = 5 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 49 | psi = 0.000000 | theta = 0.000000 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 50 | psi = 0.436332 | theta = -0.033161 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 51 | psi = 0.872665 | theta = -0.066323 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 52 | psi = 0.872665 | theta = -0.066323 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 53 | psi = 0.610865 | theta = -0.054978 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 54 | psi = 0.349066 | theta = -0.043633 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 55 | psi = 0.349066 | theta = -0.043633 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 56 | psi = 0.680678 | theta = 0.075922 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 57 | psi = 1.012291 | theta = 0.195477 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 58 | psi = 1.012291 | theta = 0.195477 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 59 | psi = 0.680678 | theta = 0.097738 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 60 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 61 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 62 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 63 | psi = 0.349066 | theta = 0.000000 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+
+rparams:
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|350.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|2.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|3.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|3.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|3.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|3.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|106.000000|4.000000e-02|2.220000e+01|3.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|1.000000|1.000000e-03|1.000000e-06|350.000000|76.000000|0.000000e+00|2.981000e+03|0.000000|2.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.500000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|1.000000|1.000000e-03|1.000000e-06|350.000000|76.000000|0.000000e+00|2.981000e+03|0.000000|2.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|9.999000e+03|1.000000|1.000000|0.000000|0.000000|0.000000
+
+
+connex:
+
+region 0 --> 0 and 1 and -1 and 0 and 0 and 0
+
+region 1 --> 0 and 2 and -1 and 0 and 0 and 0
+
+region 2 --> 1 and 3 and -1 and 0 and 0 and 0
+
+region 3 --> 2 and 4 and -1 and 0 and 0 and 0
+
+region 4 --> 3 and 5 and -1 and 0 and 0 and 0
+
+region 5 --> 4 and 6 and -1 and 0 and 0 and 0
+
+region 6 --> 5 and 7 and -1 and 0 and 0 and 0
+
+region 7 --> 6 and 8 and -1 and 0 and 0 and 0
+
+region 8 --> 7 and 9 and -1 and 0 and 0 and 0
+
+region 9 --> 8 and 10 and -1 and 0 and 0 and 0
+
+region 10 --> 9 and 11 and -1 and 0 and 0 and 0
+
+region 11 --> 10 and 12 and -1 and 0 and 0 and 0
+
+region 12 --> 11 and 13 and -1 and 0 and 0 and 0
+
+region 13 --> 12 and 14 and -1 and 0 and 0 and 0
+
+region 14 --> 13 and 15 and -1 and 0 and 0 and 0
+
+region 15 --> 14 and 16 and -1 and 0 and 0 and 0
+
+region 16 --> 15 and 17 and -1 and 0 and 0 and 0
+
+region 17 --> 16 and 18 and -1 and 0 and 0 and 0
+
+region 18 --> 17 and 19 and -1 and 0 and 0 and 0
+
+region 19 --> 18 and 20 and -1 and 0 and 0 and 0
+
+region 20 --> 19 and 21 and -1 and 0 and 0 and 0
+
+region 21 --> 20 and 22 and -1 and 0 and 0 and 0
+
+region 22 --> 21 and 23 and -1 and 0 and 0 and 0
+
+region 23 --> 22 and 24 and -1 and 0 and 0 and 0
+
+region 24 --> 23 and 25 and -1 and 0 and 0 and 0
+
+region 25 --> 24 and 26 and -1 and 0 and 0 and 0
+
+region 26 --> 25 and 27 and -1 and 0 and 0 and 0
+
+region 27 --> 26 and 28 and -1 and 0 and 0 and 0
+
+region 28 --> 27 and 29 and -1 and 0 and 0 and 0
+
+region 29 --> 28 and 30 and -1 and 0 and 0 and 0
+
+region 30 --> 29 and 31 and -1 and 0 and 0 and 0
+
+region 31 --> 30 and 32 and -1 and 0 and 0 and 0
+
+region 32 --> 31 and 33 and -1 and 0 and 0 and 0
+
+region 33 --> 32 and 34 and -1 and 0 and 0 and 0
+
+region 34 --> 33 and 35 and -1 and 0 and 0 and 0
+
+region 35 --> 34 and 36 and -1 and 0 and 0 and 0
+
+region 36 --> 35 and 37 and -1 and 0 and 0 and 0
+
+region 37 --> 36 and 38 and -1 and 0 and 0 and 0
+
+region 38 --> 37 and 39 and -1 and 0 and 0 and 0
+
+region 39 --> 38 and 40 and -1 and 0 and 0 and 0
+
+region 40 --> 39 and 41 and -1 and 0 and 0 and 0
+
+region 41 --> 40 and 42 and -1 and 0 and 0 and 0
+
+region 42 --> 41 and 43 and -1 and 0 and 0 and 0
+
+region 43 --> 42 and 44 and -1 and 0 and 0 and 0
+
+region 44 --> 43 and 45 and -1 and 0 and 0 and 0
+
+region 45 --> 44 and 46 and -1 and 0 and 0 and 0
+
+region 46 --> 45 and 47 and -1 and 0 and 0 and 0
+
+region 47 --> 46 and 48 and -1 and 0 and 0 and 0
+
+region 48 --> 47 and 49 and -1 and 0 and 0 and 0
+
+region 49 --> 48 and 50 and -1 and 0 and 0 and 0
+
+region 50 --> 49 and 51 and -1 and 0 and 0 and 0
+
+region 51 --> 50 and 52 and -1 and 0 and 0 and 0
+
+region 52 --> 51 and 53 and -1 and 0 and 0 and 0
+
+region 53 --> 52 and 54 and -1 and 0 and 0 and 0
+
+region 54 --> 53 and 55 and -1 and 0 and 0 and 0
+
+region 55 --> 54 and 56 and -1 and 0 and 0 and 0
+
+region 56 --> 55 and 57 and -1 and 0 and 0 and 0
+
+region 57 --> 56 and 58 and -1 and 0 and 0 and 0
+
+region 58 --> 57 and 59 and -1 and 0 and 0 and 0
+
+region 59 --> 58 and 60 and -1 and 0 and 0 and 0
+
+region 60 --> 59 and 61 and -1 and 0 and 0 and 0
+
+region 61 --> 60 and 62 and -1 and 0 and 0 and 0
+
+region 62 --> 61 and 63 and -1 and 0 and 0 and 0
+
+region 63 --> 62 and -1 and 0 and 0 and 0 and 0
+
+
