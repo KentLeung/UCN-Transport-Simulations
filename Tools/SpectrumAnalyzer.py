@@ -4,7 +4,8 @@ from pylab import *
 import sys
 
 nev2J = 1.602177e-28
-vcutoff = 8/nev2J
+nMASS = 1.67493e-27
+vcutoff = (0.5)*nMASS*(8**2)/nev2J
 
 #grab events.sim file
 file = open(sys.argv[1],"r")
@@ -20,7 +21,7 @@ for line in raw:
 poofs = []
 for event in events:
     if event[1] == 14:
-        poofs.append([int(event[0]),event[14],event[15]])
+        poofs.append([int(event[0]),int(event[3]),event[14],event[15]])
 
 #separate angular detector cutplane events
 hits = []
@@ -40,40 +41,69 @@ for i in range(0,len(detectors)):
         if hit[1] == detectors[i]:
             cphits[i].append(hit)
 
-def plotinit(typeofgraph, destination):
-    close()
-    type = {"energy":1 , "direction":2}
-    lims = {"energy":0 , "direction":-100}
-    titles = {"energy":"Energy", "direction":"Vx"}
-    hist([item[type[typeofgraph]] for item in poofs],25)
-    xlabel("Energy (neV)")
-    ylabel("Frequency")
-    xlim((lims[typeofgraph],500))
-    title("Initial {:s} Distribution".format(titles[typeofgraph]))
-    savefig(destination + "/Initial {:s} Distribution".format(titles[typeofgraph]))
-    close()
+n1, binsinitial, patches = hist([i[3] for i in poofs],50,normed='true')
+clf()
+bins1 = []
+for i in range(0,len(binsinitial)-1):
+    bins1.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
 
-def plotcut(cutplane, typeofgraph, destination):
-    close()
-    type = {"energy":2 , "direction":3}
-    lims = {"energy":0 , "direction":-100}
-    titles = {"energy":"Energy", "direction":"Vx"}
-    hist([item[type[typeofgraph]] for item in cphits[detid[cutplane]]],25)
-    xlabel("Energy (neV)")
-    ylabel("Frequency")
-    title("{:s} Distribution at Cut Plane {:d}".format(titles[typeofgraph], cutplane))
-    xlim((lims[typeofgraph],500))
-    savefig(destination + "/{:d} {:s}".format(cutplane, titles[typeofgraph]))
-    close()
+n2, binsinitial, patches = hist([i[3] for i in cphits[detid[6]]],50,normed='true')
+clf()
+bins2 = []
+for i in range(0,len(binsinitial)-1):
+    bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
 
-destination = sys.argv[2]
+print bins1
+print list(n1)
+print bins2
+print list(n2)
 
-plotinit("energy",destination)
-plotinit("direction", destination)
 
-for i in detectors:
-    plotcut(i,"energy",destination)
-    plotcut(i,"direction", destination)
+
+
+
+
+plot(bins1,n1*100,'k--',bins2,n2*100,'k-')
+#ylim((0,2))
+#yticks([0,1,2])
+#xlim((0,500))
+#xticks([0,100,200,300,400,500])
+show()
+
+#def plotinit(typeofgraph, destination):
+#    close()
+#    type = {"energy":1 , "direction":2}
+#    lims = {"energy":0 , "direction":-100}
+#    titles = {"energy":"Energy", "direction":"Vx"}
+#    hist([item[type[typeofgraph]] for item in poofs],25)
+#    xlabel("Energy (neV)")
+#    ylabel("Frequency")
+#    xlim((lims[typeofgraph],500))
+#    title("Initial {:s} Distribution".format(titles[typeofgraph]))
+#    savefig(destination + "/Initial {:s} Distribution".format(titles[typeofgraph]))
+#    close()
+#
+#def plotcut(cutplane, typeofgraph, destination):
+#    close()
+#    type = {"energy":2 , "direction":3}
+#    lims = {"energy":0 , "direction":-100}
+#    titles = {"energy":"Energy", "direction":"Vx"}
+#    hist([item[type[typeofgraph]] for item in cphits[detid[cutplane]]],25)
+#    xlabel("Energy (neV)")
+#    ylabel("Frequency")
+#    title("{:s} Distribution at Cut Plane {:d}".format(titles[typeofgraph], cutplane))
+#    xlim((lims[typeofgraph],500))
+#    savefig(destination + "/{:d} {:s}".format(cutplane, titles[typeofgraph]))
+#    close()
+
+#destination = sys.argv[1][:-11]
+#
+#plotinit("energy",destination)
+#plotinit("direction", destination)
+#
+#for i in detectors:
+#    plotcut(i,"energy",destination)
+#    plotcut(i,"direction", destination)
 
 
 #close()
