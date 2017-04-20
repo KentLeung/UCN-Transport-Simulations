@@ -730,7 +730,7 @@ void geomread(char regionsfile[20],char connexfile[20]) {
         fseek(connexfp,fpos,SEEK_SET); //Backup to the point in the file before the string was read.
         fscanf(connexfp,"%d,%d",&reg,&shcode); //Get the current region number whose connection list we are parsing and special-handling code.
         cplanes[reg][2] = (double)shcode; //Load the special-handling code into 'cplanes'.
-        if(cplanes[reg][2] == 2.) fscanf(connexfp,"(%lf)",&cplanes[reg][3]); //If the cut-plane has special-handling code 2 then read in the associated value.
+        if(cplanes[reg][2] == 2. || cplanes[reg][2] == 7.) fscanf(connexfp,"(%lf)",&cplanes[reg][3]); //If the cut-plane has special-handling code 2 then read in the associated value.
         chflag = -1; //Set flag to indicate that a special-handling flag has been read.
         break;
       }
@@ -2465,6 +2465,7 @@ int cplanehandling(void) {
   double deltakE, minusdeltakEneV;
   double vn,vyb,vzb,bpx,bpy,bpz,xp,yp,zp,vxloc,vyloc,vzloc;
   double traj[3][3],dt;
+  double xb,yb,zb,raperature,rparticle;
   
   if(neutron.xcode < 0) {  //Current intersection is with a region or there is no current intersection.
     printf("+ERROR: 'cplanehandling' called without a cut-plane intersection! Particle number %d abandoned!\n",neutron.num);
@@ -2608,7 +2609,39 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       cpcode = -1; //The particle is whithin the guide that it is entering and so may be passed through.
     }
   }
+  
+  if (cpcode == 7) { //cutplane has a spherical aperature (must have this positioned before cpcode = 6 and -1 so that they can be called depending on particle position). Made by Erik Lutz
     
+    //printf("We got a sevener!\n");
+    
+    //printf("(%f,%f,%f)\n",neutron.x,neutron.y,neutron.z);
+    
+    xb = neutron.x - basepoints[neutron.xcode][0]; //translate to basepoint
+    yb = neutron.y - basepoints[neutron.xcode][1];
+    zb = neutron.z - basepoints[neutron.xcode][2];
+    gsys2bsys(xb,yb,zb,&xb,&yb,&zb); //transform to bounce frame
+    
+    //printf("(%f,%f,%f)\n",xb,yb,zb);
+    
+    raperature = cplanes[neutron.xcode][3]; //get radius of aperature
+    rparticle = sqrt(pow(yb,2)+pow(zb,2)); //calculate distance from center of cutplane
+    
+    //printf("(%f,%f)\n",raperature,rparticle);
+    
+    if (2*raperature > regions[neutron.xcode][1]) raperature = regions[neutron.xcode][1]/2.; //aperature cannot be bigger than region
+    
+    if (rparticle <  raperature) cpcode = -1; //particle is within aperature so pass it through
+    if (rparticle >= raperature) cpcode = 6; //particle is outside of aperature so bounce it back
+    
+    if ((rparticle <  raperature) && (rparticle >= raperature)){ //Error
+      if(CONSOLE == "ON") printf("Particle lost unphysically on an aperature cutplane");
+      return -1;
+    }
+    
+    //printf("Got through the sevener! cpcode = %d.\n", cpcode);
+    
+  }
+  
   
   if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
       if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1); //Bounce is being called for reflection off the current
@@ -2621,9 +2654,9 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
       if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
   }
-    
-    
   
+  
+
   if(cpcode == -1 || cpcode == 2) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
                                     //OR the surface has a defined surface roughness, implemented by Erik Lutz
     if(neutron.xcode == 0) {  //Particle is incident on the start-region's cut-plane, whose behavior should have been specified by a special-handling code.
@@ -2926,12 +2959,7 @@ void cprandperturb(void) { //created by Erik Lutz
   double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
   double thetaf, phif;
   
-  //printf("Rough surface encountered.\n");
-  //printf("neutron.xcode = %d.\n", neutron.xcode);
-  
   gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vny,&vnz);
-  
-  //printf("\ninitial vnx = %f.\n", vnx);
   
   v = sqrt(pow(vnx,2)+pow(vny,2)+pow(vnz,2));
   
@@ -2959,26 +2987,6 @@ void cprandperturb(void) { //created by Erik Lutz
   
   thetaf = theta + randtheta;
   phif = phi + randphi;
-  
-//  if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
-//    thetaf = 2*PI - (theta + randtheta);
-//    phif = (phi + randphi) + PI;
-//  }
-//  
-//  if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
-//    thetaf = fabs(theta + randtheta);
-//    phif = (phi + randphi) + PI;
-//  }
-//  
-//  if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
-//    phif = phif + 2*PI;
-//  }
-//  
-//  if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
-//    phif = phif - 2*PI;
-//  }
-  
-  //printf("Check 1.\n");
 
   if (vnx > 0) { //particle is above cut-plane
     while (cos(thetaf) < 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
@@ -3003,30 +3011,9 @@ void cprandperturb(void) { //created by Erik Lutz
       
       thetaf = theta + randtheta;
       phif = phi + randphi;
-      
-      //printf("thetaf = %f.\n",thetaf);
-      
-//      if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
-//        thetaf = 2*PI - (theta + randtheta);
-//        phif = (phi + randphi) + PI;
-//      }
-//      
-//      if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
-//        thetaf = fabs(theta + randtheta);
-//        phif = (phi + randphi) + PI;
-//      }
-//      
-//      if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
-//        phif = phif + 2*PI;
-//      }
-//      
-//      if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
-//        phif = phif - 2*PI;
-//      }
+
     }
   }
-  
-  //printf("Check 1.1.\n");
   
   if (vnx < 0) { //particle is below cut-plane
     while (cos(thetaf) > 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
@@ -3050,37 +3037,13 @@ void cprandperturb(void) { //created by Erik Lutz
       thetaf = theta + randtheta;
       phif = phi + randphi;
       
-//      if (theta + randtheta > PI) { //fix final angle so that it is in [0,Pi]
-//        thetaf = 2*PI - (theta + randtheta);
-//        phif = (phi + randphi) + PI;
-//      }
-//      
-//      if (theta + randtheta < 0) { //fix final angle so that it is in [0,Pi]
-//        thetaf = fabs(theta + randtheta);
-//        phif = (phi + randphi) + PI;
-//      }
-//      
-//      if (phif < 0) { //fix final angle so that it is in [0,2*Pi]
-//        phif = phif + 2*PI;
-//      }
-//      
-//      if (phif > 2*PI) { //fix final angle so that it is in [0,2*Pi]
-//        phif = phif - 2*PI;
-//      }
     }
   }
-  
-  //printf("Check 2.\n");
-  //printf("Theta: %f --> %f. Phi: %f --> %f.\n", theta*180/PI, thetaf*180/PI, phi*180/PI, phif*180/PI);
-  
+
   //apply new direction to vector
   vnx = v*cos(thetaf);
   vny = v*sin(thetaf)*cos(phif);
   vnz = v*sin(thetaf)*sin(phif);
   
-  //printf("final vnx = %f.\n\n", vnx);
-  
   bsys2gsys(vnx,vny,vnz,&neutron.vx,&neutron.vy,&neutron.vz); //Transform the particle's new direction back into the global system.
-  
-  //printf("Particle perturbed.\n");
 }
