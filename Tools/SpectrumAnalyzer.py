@@ -1,4 +1,5 @@
 #Plotter for particle energy spectra
+#to run: python SpectrumAnalyzer.py events.sim
 
 from pylab import *
 import sys
@@ -47,28 +48,20 @@ bins1 = []
 for i in range(0,len(binsinitial)-1):
     bins1.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
 
-n2, binsinitial, patches = hist([i[3] for i in cphits[detid[6]]],50,normed='true')
+n2, binsinitial, patches = hist([i[3] for i in cphits[detid[3]]],50,normed='true')
 clf()
 bins2 = []
 for i in range(0,len(binsinitial)-1):
     bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
 
-print bins1
-print list(n1)
-print bins2
-print list(n2)
-
-
-
-
-
-
 plot(bins1,n1*100,'k--',bins2,n2*100,'k-')
+show()
+
+
 #ylim((0,2))
 #yticks([0,1,2])
 #xlim((0,500))
 #xticks([0,100,200,300,400,500])
-show()
 
 #def plotinit(typeofgraph, destination):
 #    close()
