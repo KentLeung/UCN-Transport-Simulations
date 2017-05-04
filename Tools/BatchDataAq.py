@@ -10,8 +10,8 @@ from time import *
 import os
 
 #PARAMETERS#
-N = 3 #Number of runs
-DET = [1,2,3]
+N = 5 #Number of runs
+DET = [2,1]
 
 
 
@@ -35,7 +35,7 @@ def finalRuns(binary,directory,detectors,runs=5):
         sortFiles(i,directory)
     fileoutput.append(directory)
     for i in output:
-        fileoutput.append(str(i)[1:-1])
+        fileoutput.append(str(i)[1:-1].replace(",",""))
     fileoutput.append("")
     fileoutput.append("")
     return output

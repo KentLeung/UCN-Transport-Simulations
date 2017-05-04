@@ -12,7 +12,7 @@
 #define N 1000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
-#define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
+#define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
 #define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
@@ -463,6 +463,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
       }
       if(ecode == 2 || ecode == 16) {  //Particle intersected a cut-plane or a T-junction.
         cpcode = cplanehandling(); //Handle the cut-plane intersection.
+        while (cpcode == 2) cpcode = cplanehandling(); //particle was bounced but continues in same direction b\c of roughness, call cphandling again to simulate it rehitting surface
         if(cpcode == 1) break; //The particle was lost due to physical interactions so move on to the next particle.
         if(cpcode == -1) {  //The particle was lost unphysically.
           lost++; //Increment the lost particle counter.
@@ -1256,7 +1257,7 @@ void solve3(double c3, double c2, double c1, double c0,double *pr1,double *pr2,d
     r3.r = (-1./2.)*(s1.r+s2.r) - a/3. + (sqrt(3.)/2.)*(s1.i - s2.i);
     r3.i = (-1./2.)*(s1.i+s2.i) - (sqrt(3.)/2.)*(s1.r - s2.r);
     if(mathzero(r1.i) != 0 || mathzero(r2.i) != 0 || mathzero(r3.i) != 0) {
-      if(CONSOLE == "ON") printf("+WARNING: A root has a nonzero imaginary part for D=0 case in solve3!\n");
+      //if(CONSOLE == "ON") printf("+WARNING: A root has a nonzero imaginary part for D=0 case in solve3!\n");
     }
     
    *pr1 = r1.r;
@@ -1541,8 +1542,9 @@ int bounce(int parareg, double mpot, int dirflag, double passnx, double passny, 
     printf("+ERROR: 'bounce' called with undefined direction flag! [Particle#: %d]\n",neutron.num);
     return -1;
   }
-
+  
   gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vxb,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity components into the bounce system.
+
 
   //Calculate the angle that the velocity vector makes with the appropriate normal to the surface (which in the bounce system is defined to be the x-axis).
   if(fabs(vxb) == 0) pang = PI/2.;
@@ -1550,7 +1552,7 @@ int bounce(int parareg, double mpot, int dirflag, double passnx, double passny, 
   azang = atan2(vyb,vzb); //Calculate the azimuthal angle of the velocity vector relative to the longitudinal axis (z-axis in the bounce system).
   if(EVENTS == "ON") event(12,pang,azang,vxb,vzb); //Write an event for entering a bounce.
   
-  losschk = loss(parareg,mpot,passnz,passny,passnz); //Check for wall loss.
+  losschk = loss(parareg,mpot,passnx,passny,passnz); //Check for wall loss.
   if(losschk == -1) return -1; //Error in determining wall loss.
   if(losschk == 1) return 1; //Particle penetrates wall.
   if(losschk == 2) return 2; //Particle lost to wall through physical mechanism.
@@ -1561,11 +1563,15 @@ int bounce(int parareg, double mpot, int dirflag, double passnx, double passny, 
 
   if(btype == 0) {  //The bounce is specular.
     if((vxb >= 0 && dirflag == 1) || (vxb <= 0 && dirflag == -1)) {  //Particle has no velocity component into the wall.
-      if(CONSOLE == "ON") printf("+WARNING: 'bounce' called for particle with no velocity component into wall! [Part#: %d | Reg#: %d]\n",neutron.num,neutron.region);
+      //printf("Vxb in bounce: %f\n",vxb);
+      if(CONSOLE == "ON") printf("+WARNING: 'bounce' called for particle with no velocity component into wall! [Part#: %d | Reg#: %d | Pos: (%f,%f,%f) | Vx: %f | dirflag: %d]\n",neutron.num,neutron.region,neutron.x,neutron.y,neutron.z,vxb,dirflag);
 	  event(-1,0,dirflag,vxb,0);
       return -1;
     }
-      
+    
+    
+    
+    //printf("Vxb in bounce: %f, dirflag: %d, Reg: %d, xcode: %d\n",vxb,dirflag,neutron.region, neutron.xcode);
     vxb = -vxb;                                                  //Reverse the velocity vector's normal component (the x-component in the bounce system) for a specular bounce.
     bsys2gsys(vxb,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz,passnx,passny,passnz); //Transform the "bounced" velocity vector back to the global system
                                                                //and update the particle's velocity vector.
@@ -1674,8 +1680,10 @@ int loss(int parareg, double mpot, double passnx, double passny, double passnz) 
   int superflag;
   
   //Check to see if the particle's energy "perpendicular to the wall" is above the wall's Fermi potential.
-  normal(&nx,&ny,&nz,passnx,passny,passnz); //Get normal vector to current intersection point.
+  normal(&nx,&ny,&nz,passnx,passny,passnz); //Get normal vector to current intersection point.]
+  //printf("loss pass = (%f,%f,%f), loss n = (%f,%f,%f).\n", passnx,passny,passnz,nx,ny,nz);
   vperp = neutron.vx*nx + neutron.vy*ny + neutron.vz*nz; //Calculate the component of the particle velocity perpendicular to the wall.
+  //printf("vperp = %f, pass = (%f,%f,%f).\n",vperp,passnx,passny,passnz);
   Eperp = 1./2.*nMASS*pow(vperp,2); //Calculate the 'perpendicular' energy.
   superflag=0;
 
@@ -1959,9 +1967,9 @@ void gsys2bsys(double gcx,double gcy,double gcz,double *bcx,double *bcy,double *
   
   normal(&nx,&ny,&nz,passnx,passny,passnz); //Calculate normal at current point of intersection. [Bounce system x-axis.]
   
-  if (passnx != 0 && passny != 0 && passnz != 0) {
-    printf("In gsys2bsys() we have a normal of (%f,%f,%f).\n",nx,ny,nz);
-  }
+//  if (passnx != 0 && passny != 0 && passnz != 0) {
+//    printf("In gsys2bsys() we have a normal of (%f,%f,%f).\n\n",nx,ny,nz);
+//  }
   
   //Generate a unit vector perpendicular to the unit normal. [Bounce system's z-axis.]
   if(timezero(ny) != 0. || timezero(nz) != 0.) {  //We may generate a perpendicular vector by crossing the normal with the global x-hat vector.
@@ -2485,6 +2493,7 @@ int cplanehandling(void) {
   double traj[3][3],dt;
   double xb,yb,zb,raperature,rparticle;
   double passnx,passny,passnz;
+  double vninitial, vnfinal, vyi,vzi,vyf,vzf,nx,ny,nz;
   
   if(neutron.xcode < 0) {  //Current intersection is with a region or there is no current intersection.
     printf("+ERROR: 'cplanehandling' called without a cut-plane intersection! Particle number %d abandoned!\n",neutron.num);
@@ -2689,37 +2698,75 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       passnx = 0;
       passny = 0;
       passnz = 0;
+      vn     = 0;
       
-      if (cpcode == 2) {//the surface has a defined roughness
-        perturbednormal(&passnx,&passny,&passnz);
-        printf("pertubednormal() has returned (%f,%f,%f).\n",passnx,passny,passnz);
+      deltakE = (rparams[neutron.region][7] - rparams[regf][7])*neV2J; //The difference in Fermi potential between the region the particle is leaving (defined
+                                                                      //at its cut-plane) and the region it is entering (defined at its cut-plane) gives the
+                                                                     //required energy shift, i.e deltakE = PEi - PEf
+      minusdeltakEneV = -(rparams[neutron.region][7] - rparams[regf][7]);
+
+      
+      
+      
+      if(neutron.xcode == neutron.region){ //particle is interacting with the cutplane of the region its in, normal velocity should be negative
+        
+        if (cpcode == 2) {//the surface has a defined roughness
+          gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
+          while (vn >= 0) {
+            perturbednormal(&passnx,&passny,&passnz);
+            gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
+                                                                                           //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
+                                                                                          //cut-plane's region) so that normal velocity component shifts may be calculated below.
+          }
+        }
+        else gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz);
+        normal(&nx,&ny,&nz,passnx,passny,passnz);
+        bcheck = bounce(regf,minusdeltakEneV,1,passnx,passny,passnz); //Bounce is being called for reflection off the current region's cut-plane.
+                                                                     //The models/values used for the bounce will be those of the region into which
+                                                                    //the particle is heading (with the material potential taken as that region's
+                                                                   //bulk potential).
       }
       
-      gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
-                                                                //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
-                                                               //cut-plane's region) so that normal velocity component shifts may be calculated below.
-      deltakE = (rparams[neutron.region][7] - rparams[regf][7])*neV2J; //The difference in Fermi potential between the region the particle is leaving (defined
-                                                                    //at its cut-plane) and the region it is entering (defined at its cut-plane) gives the
-                                                                   //required energy shift, i.e deltakE = PEi - PEf
-      minusdeltakEneV = -(rparams[neutron.region][7] - rparams[regf][7]);
+      
+      
+      else { //particle is interacting with a connecting region's cutplane, normal velocity should be positive
         
+        if (cpcode == 2) {//the surface has a defined roughness
+          gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
+          while (vn <= 0) {
+            perturbednormal(&passnx,&passny,&passnz);
+            gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
+                                                                                           //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
+                                                                                          //cut-plane's region) so that normal velocity component shifts may be calculated below.
+          }
+        }
+        else gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz);
+        bcheck = bounce(regf,minusdeltakEneV,-1,passnx,passny,passnz); //The normal used in 'bounce' must be reversed since particle may reflect
+                                                                      //off a cut-plane associated with an
+                                                                     //adjoining region. The models/values for the region the particle is trying to enter will be used for the
+                                                                    //bounce (with the material potential taken as that region's bulk potential).
         
-      if(neutron.xcode == neutron.region) bcheck = bounce(regf,minusdeltakEneV,1,passnx,passny,passnz); //Bounce is being called for reflection off the current region's cut-plane.
-                                                                                   //The models/values used for the bounce will be those of the region into which
-                                                                                  //the particle is heading (with the material potential taken as that region's
-                                                                                 //bulk potential).
-      else bcheck = bounce(regf,minusdeltakEneV,-1,passnx,passny,passnz); //The normal used in 'bounce' must be reversed since particle may reflect off a cut-plane associated with an
-                                                     //adjoining region. The models/values for the region the particle is trying to enter will be used for the
-                                                    //bounce (with the material potential taken as that region's bulk potential).
+      }
+      
+      
+      gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
+
+      
       if(bcheck == 0) { //The particle bounced off the cut-plane and has been given a new bounced velocity.
+        if ((vninitial > 0 && vnfinal > 0) || (vninitial < 0 && vnfinal < 0)) { //even though particle is bounced it still goes into next region because of roughness
+          return 2;
+        }
         return 0;
       }
       if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
-        neutron.region = regf; //Pass the particle through the cut-plane.
         if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
-          printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component!\n",neutron.num);
+          printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component! [Reg: %d, xcode: %d]\n",neutron.num,neutron.region,neutron.xcode);
           return -1; //Abandon the particle.
         }
+        neutron.region = regf; //Pass the particle through the cut-plane.
+
+        
+        normal(&nx,&ny,&nz,0,0,0);
         
         vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
         
@@ -2980,6 +3027,7 @@ void perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
   double thetaf, phif;
   
   normal(&inx,&iny,&inz,0,0,0);
+  //printf("normal() has returned (%f,%f,%f).\n",inx,iny,inz);
   
   randthetaseed = grn();
   randphiseed = grn();
@@ -2991,12 +3039,12 @@ void perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
   surfparamlin = cplanes[neutron.xcode][3]-1.;    //grab user supplied surface roughness parameter for linear model
   
   if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
-    randtheta = (PI/2.)*acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi/2
+    randtheta = (1./2.)*acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi/2
     randphi = (PI/2.)*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi/2
   }
   
   if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
-    randtheta = (PI/2.)*acos(1.-2.*surfparamlin*randthetaseed);
+    randtheta = (1./2.)*acos(1.-2.*surfparamlin*randthetaseed);
     randphi = (PI/2.)*surfparamlin*randphiseed;
   }
   
@@ -3009,6 +3057,7 @@ void perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
   *nx = cos(thetaf);
   *ny = sin(thetaf)*cos(phif);
   *nz = sin(thetaf)*sin(phif);
+  //printf("pertubednormal() has returned (%f,%f,%f).\n",*nx,*ny,*nz);
 }
 
 void cprandperturb(void) { //created by Erik Lutz
