@@ -49,7 +49,7 @@ if sys.argv[2] == 'param': #Change a specific parameter on several or all lines
     if regs == "-1":
         for i in raw:
             i[options[param]] = value
-    #Change a value in specified regionso to something
+    #Change a value in specified regions to something
     else:
         regs = regs.split(',')
         for i in raw:

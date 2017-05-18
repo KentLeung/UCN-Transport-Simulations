@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Running Parameters
-#define N 1000  //The number of particles to propagate through the geometry.
+#define N 100  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
@@ -21,7 +21,7 @@
 #define RSEED "RAND"  //Random seed for the random number generator, which should be an unsigned integer or "RAND" if a new seed is desired each simulation
 #define MZERO 1e-10  //The zero boundary value used in 'mathzero' to control roundoff error.
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
-#define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
+#define GZERO 1e-8  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
 #define VCUTOFF 8.0  //Cut-off speed for a v^2 dv speed dsitribution.
 #define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
@@ -379,7 +379,10 @@ int main(int argc, char *argv[]) {
 }
 
 int simexec(char *eventsfn,char *detectorsfn,int *counts) {
+  int reinteract;
   time_t randomseed;
+  double timeelapsed;
+  int timeestimate;
   time_t *calendartime; //time_t is variable type appropriate for reading the calendar time from the system.
   struct tm *loctime; //tm is a pre-defined structure for holding the local time.
   //loctime = localtime(calendartime); //Converts the calendar time into the local time tm-structure.
@@ -429,7 +432,12 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
     neutron.region = -1;
     neutron.xcode = -5;
     neutron.num = n;
-    poof(1,grn()*0.039,0,0); //Create the particle.
+    if (neutron.num % 1000 == 0 && neutron.num > 0) {
+        timeelapsed = difftime(time(NULL),randomseed);
+        timeestimate = (int)((timeelapsed/n)*(N-n)/60);
+        printf("Creating neutron %d. Approximately %d minutes remaining.\n",neutron.num,timeestimate);
+    }
+    poof(1,grn()*0.039,0,1); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -463,7 +471,12 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
       }
       if(ecode == 2 || ecode == 16) {  //Particle intersected a cut-plane or a T-junction.
         cpcode = cplanehandling(); //Handle the cut-plane intersection.
-        while (cpcode == 2) cpcode = cplanehandling(); //particle was bounced but continues in same direction b\c of roughness, call cphandling again to simulate it rehitting surface
+        reinteract=0;
+          while (cpcode == 2) {
+              cpcode = cplanehandling(); //particle was bounced but continues in same direction b\c of roughness, call cphandling again to simulate it rehitting surface
+              reinteract++;
+          }
+        //if (CONSOLE == "ON" && reinteract != 0) printf("Particle re-interacted with rough surface %d times.\n",reinteract);
         if(cpcode == 1) break; //The particle was lost due to physical interactions so move on to the next particle.
         if(cpcode == -1) {  //The particle was lost unphysically.
           lost++; //Increment the lost particle counter.
@@ -1309,6 +1322,7 @@ void poof(int startregion, double poofplaneD, int vdistcode, int adistcode) {
   double cosrangle1,sinrangle1,mradius,rradius,rangle1,rangle2;
   double dx,dy,dz,dxr,dyr,dzr,thetar,phir,psir;
   double v,vx,vy,vz,vxr,vyr,vzr,test,PofV;
+    
   
   vdistflag = 0;
   adistflag = 0;
@@ -1438,11 +1452,11 @@ int propagate(void) {
     if(propmode == 1 || propmode == 2 || propmode == 3 || propmode == 4) {  //Region possesses a medium
       blkmed = propinmed(dt,traj); //Check for interactions with the bulk medium.
       if(blkmed == 8) {  //Particle absorbed in a non-detector region.
-        event(8,0,0,0,0);
+        if(EVENTS == "ON") event(8,0,0,0,0);
         return 8;
       }
       if(blkmed == 9) {  //Particle was absorbed in a detector region.
-		event(9,0,0,0,0);
+		if(EVENTS == "ON") event(9,0,0,0,0);
         return 9;
       }
       if(blkmed == 17) {  //Particle was scattered in the bulk medium.
@@ -1695,7 +1709,7 @@ int loss(int parareg, double mpot, double passnx, double passny, double passnz) 
   if(Eperp > mpot*neV2J) {
 	TransCoeff = 4.*sqrt(Eperp)*sqrt(Eperp-mpot*neV2J)/pow(sqrt(Eperp)+sqrt(Eperp-mpot*neV2J),2);
 	if(grn() < TransCoeff){   //Particle penetrates the material and is lost.
-    	event(13,Eperp,mpot,0,0);
+    	if(EVENTS == "ON") event(13,Eperp,mpot,0,0);
         return 1;
 	} //Particle penetrates wall.
 	else superflag=1;
@@ -2368,7 +2382,7 @@ int move(double dt, double traj[3][3], int gcheck) {
         
     discrep = ssz; //Particle should be on the cut-plane so solving-system z-coordinate should be zero.
     if(discrep < -GZERO || discrep > GZERO) {  //We'll consider the particle too far away from the cut-plane and abandon it.
-      if(CONSOLE == "ON") printf("+WARNING: Particle number %d escaped from the current region! [discrep = %e | region = %d]\n",neutron.num,discrep,neutron.region);
+      if(CONSOLE == "ON") printf("+WARNING: Particle number %d escaped from the current region! [discrep = %e | region = %d | xcode = %d]\n",neutron.num,discrep,neutron.region, neutron.xcode);
       event(-1,0,0,0,0);
       return -1;
     }
@@ -2493,7 +2507,8 @@ int cplanehandling(void) {
   double traj[3][3],dt;
   double xb,yb,zb,raperature,rparticle;
   double passnx,passny,passnz;
-  double vninitial, vnfinal, vyi,vzi,vyf,vzf,nx,ny,nz;
+  double vninitial, vnfinal, vyi,vzi,vyf,vzf,nx,ny,nz,nxperturb,nyperturb,nzperturb;
+  int cyclecount;
   
   if(neutron.xcode < 0) {  //Current intersection is with a region or there is no current intersection.
     printf("+ERROR: 'cplanehandling' called without a cut-plane intersection! Particle number %d abandoned!\n",neutron.num);
@@ -2638,18 +2653,6 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
     }
   }
   
-  if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
-      if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1,0,0,0); //Bounce is being called for reflection off the current
-      //region's cut-plane. The models/values and potential will
-      //be those associated with current (box) region.
-      else bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],-1,0,0,0); //The normal used in 'bounce' must be reversed since the particle has hit a cut-plane
-      //associated with an adjoining region. Note that the models/values and potential used will
-      //be those associated with the cylinder-region.
-      if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
-      if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
-      if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
-  }
-  
   if (cpcode == 7) { //cutplane has a spherical aperature (must have this positioned before cpcode = 6 and -1 so that they can be called depending on particle position). Made by Erik Lutz
     
     //printf("We got a sevener!\n");
@@ -2681,6 +2684,18 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
     //printf("Got through the sevener! cpcode = %d.\n", cpcode);
     
   }
+  
+  if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
+    if(neutron.xcode == neutron.region) bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],1,0,0,0); //Bounce is being called for reflection off the current
+    //region's cut-plane. The models/values and potential will
+    //be those associated with current (box) region.
+    else bcheck = bounce(neutron.xcode,rparams[neutron.xcode][6],-1,0,0,0); //The normal used in 'bounce' must be reversed since the particle has hit a cut-plane
+    //associated with an adjoining region. Note that the models/values and potential used will
+    //be those associated with the cylinder-region.
+    if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
+    if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
+    if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
+  }
 
 
   if(cpcode == -1 || cpcode == 2) {  //There is no special handling, but we must take care of any changes in Fermi potential when passing from one region to the next.
@@ -2705,22 +2720,28 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
                                                                      //required energy shift, i.e deltakE = PEi - PEf
       minusdeltakEneV = -(rparams[neutron.region][7] - rparams[regf][7]);
 
-      
+      gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
+      //if (cpcode == 2) printf("\nInitial velocity in bounce frame = (%f, %f, %f).\n",vninitial,vyi,vzi);
       
       
       if(neutron.xcode == neutron.region){ //particle is interacting with the cutplane of the region its in, normal velocity should be negative
         
         if (cpcode == 2) {//the surface has a defined roughness
-          gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
+          cyclecount = 0;
           while (vn >= 0) {
             perturbednormal(&passnx,&passny,&passnz);
             gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
                                                                                            //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
                                                                                           //cut-plane's region) so that normal velocity component shifts may be calculated below.
+            //printf("cycling to find suitable velocity.\n");
+            cyclecount++;
+            if (cyclecount == 1000) {
+              if (CONSOLE == "ON") printf("+ERROR: Tried unsuccessfully to find a suitable random normal.\n");
+              return -1;
+            }
           }
         }
         else gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz);
-        normal(&nx,&ny,&nz,passnx,passny,passnz);
         bcheck = bounce(regf,minusdeltakEneV,1,passnx,passny,passnz); //Bounce is being called for reflection off the current region's cut-plane.
                                                                      //The models/values used for the bounce will be those of the region into which
                                                                     //the particle is heading (with the material potential taken as that region's
@@ -2733,14 +2754,21 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
         
         if (cpcode == 2) {//the surface has a defined roughness
           gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
+          cyclecount = 0;
           while (vn <= 0) {
             perturbednormal(&passnx,&passny,&passnz);
             gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
                                                                                            //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
                                                                                           //cut-plane's region) so that normal velocity component shifts may be calculated below.
+            //printf("cycling to find suitable velocity.\n");
+            cyclecount++;
+            if (cyclecount == 1000) {
+              if (CONSOLE == "ON") printf("+ERROR: Tried unsuccessfully to find a suitable random normal.\n");
+              return -1;
+            }
           }
         }
-        else gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz);
+        if (cpcode == -1) gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz);
         bcheck = bounce(regf,minusdeltakEneV,-1,passnx,passny,passnz); //The normal used in 'bounce' must be reversed since particle may reflect
                                                                       //off a cut-plane associated with an
                                                                      //adjoining region. The models/values for the region the particle is trying to enter will be used for the
@@ -2750,6 +2778,15 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       
       
       gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
+      //if (cpcode == 2) printf("Velocity before penetration in bounce frame = (%f, %f, %f).\n",vnfinal,vyf,vzf);
+      //normal(&nx,&ny,&nz,passnx,passny,passnz);
+      //if (cpcode == 2) printf("\nPerturbed normal vector = (%f, %f, %f).\n",nx,ny,nz);
+
+      
+      //normal(&nx,&ny,&nz,0,0,0);
+      //normal(&nxperturb,&nyperturb,&nzperturb,passnx,passny,passnz);
+      
+      //if (nyperturb < 0.01) printf("ny = %f, nyperturb = %f. [Part: %d].\n",ny, nyperturb,neutron.num);
 
       
       if(bcheck == 0) { //The particle bounced off the cut-plane and has been given a new bounced velocity.
@@ -2758,20 +2795,29 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
         }
         return 0;
       }
+      
       if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
         if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
           printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component! [Reg: %d, xcode: %d]\n",neutron.num,neutron.region,neutron.xcode);
           return -1; //Abandon the particle.
         }
-        neutron.region = regf; //Pass the particle through the cut-plane.
-
         
-        normal(&nx,&ny,&nz,0,0,0);
-        
+        //printf("v before boost = (%f, %f, %f). ",vn,vyb,vzb);
         vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
-        
+        //printf("v after boost = (%f, %f, %f).\n",vn,vyb,vzb);
+
+        //printf("vy before boost = %f. ",neutron.vy);
         bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz,passnx,passny,passnz); //Transform the particle's new velocity back into the global system.
         
+        gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
+        if ((vninitial > 0 && vnfinal < 0) || (vninitial < 0 && vnfinal > 0)) {}
+        else neutron.region = regf; //Pass the particle through the cut-plane.
+
+        //printf("vy after boost = %f. xcode = %d.\n",neutron.vy,neutron.xcode);
+          
+        //gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
+        //if (cpcode == 2) printf("Velocity after penetration in bounce frame = (%f, %f, %f).\n",vnfinal,vyf,vzf);
+          
         if(EVENTS == "ON") event(15,0,0,0,0); //Log an event.
         return 0;
       }
@@ -3025,6 +3071,8 @@ void perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
   double surfparamexp, surfparamlin;
   double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
   double thetaf, phif;
+    
+  //printf("Perturbed Normal.\n");
   
   normal(&inx,&iny,&inz,0,0,0);
   //printf("normal() has returned (%f,%f,%f).\n",inx,iny,inz);
