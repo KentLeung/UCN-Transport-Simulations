@@ -9,11 +9,11 @@
 #include <time.h>
 
 //Running Parameters
-#define N 100  //The number of particles to propagate through the geometry.
+#define N 10000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
-#define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
-#define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
+#define CONSOLE "OFF"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
+#define EVENTS "OFF"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
 #define REGFILE "Regionfile"  //The name of the 'regions' file to be read.
@@ -458,7 +458,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
       ecode = propagate(); //Propagate the particle to its next intersection.
       if(ecode == -1) {  //This particle encountered an error during propagation so abandon it and move on to the next particle.
         lost++; //Increment the lost particle counter.
-        event(19,0,0,0,0);
+        if(EVENTS == "ON") event(19,0,0,0,0);
         break;
       }
       if(ecode == 8 || ecode == 11) break; //Particle was lost through a physical mechanism... move on to the next particle.
@@ -480,7 +480,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         if(cpcode == 1) break; //The particle was lost due to physical interactions so move on to the next particle.
         if(cpcode == -1) {  //The particle was lost unphysically.
           lost++; //Increment the lost particle counter.
-          event(19,0,0,0,0);
+          if(EVENTS == "ON") event(19,0,0,0,0);
           break; //Move on to the next particle.
         }
       }
@@ -489,7 +489,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         bcode = bounce(neutron.region,rparams[neutron.region][6],1,0,0,0); //Bounce the particle using models/values and wall potential of current region.
         if(bcode == -1) {  //Particle was lost unphysically.
           lost++; //Increment the lost particle counter.
-          event(19,0,0,0,0);
+          if(EVENTS == "ON") event(19,0,0,0,0);
           break; //Abandon the particle.
         }
         if(bcode == 1 || bcode == 2) break; //Particle was lost physically, so move on to the next particle.
@@ -1471,7 +1471,7 @@ int propagate(void) {
             
     //Check for Beta-Decay.
     if(grn() < 1./888. * dt) {
-      event(11,0,0,0,0);
+      if(EVENTS == "ON") event(11,0,0,0,0);
       return 11;
     }
     
@@ -1492,7 +1492,7 @@ int propagate(void) {
                                      //the geometry trajectory recording will cease.
         neutron.t = neutron.t - t + TRAJTS; //'move' increments the neutron time by the first argument, but in this case the first argument isn't a
                                            //time step from last point, so we must correct the neutron time.
-        event(0,0,0,0,0); //Record a trajectory event.
+        if(EVENTS == "ON") event(0,0,0,0,0); //Record a trajectory event.
       }
       //Reset particle its original state.
       neutron.t = pdymhold[0];
@@ -2567,7 +2567,7 @@ int cplanehandling(void) {
   }
   
   if(cpcode == 1) {  //Cut-plane is 100% absorptive.
-    event(8,0,0,0,0); //Log an event.  
+    if(EVENTS == "ON") event(8,0,0,0,0); //Log an event.  
     return 1; //Return the physical loss code so that the particle will be dropped.
   }
 

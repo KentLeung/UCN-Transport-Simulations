@@ -261,14 +261,24 @@ def finalRuns(binary,directory,detectors,runs=5):
     fileoutput.append("")
     return output
 
+def makePathsFromBinary(binary,dirs):
+    paths = []
+    for dir in dirs:
+        direc = []
+        for i in dir.split('/'):
+            if i not in binary.split('/'):
+                direc.append(i)
+        path = os.path.join(*direc) + '/'
+        paths.append(path.replace(" ","\ "))
+    return paths
+
 def makePaths(dirs):
     paths = []
     for dir in dirs:
         direc = []
         for i in dir.split('/'):
-            if i not in argv[1].split('/'):
-                direc.append(i)
-        path = os.path.join(*direc) + '/'
+            direc.append(i)
+        path = "/" + os.path.join(*direc)
         paths.append(path.replace(" ","\ "))
     return paths
 
@@ -299,3 +309,5 @@ def batchDataAq(pathtobinary,dirs,DET,N):
     print "All simulations finished in {:.2f} minutes.\n".format(elapsedtime)
     print "################################################################"
 
+
+##More Functions##

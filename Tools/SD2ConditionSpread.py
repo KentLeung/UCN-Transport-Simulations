@@ -5,8 +5,7 @@ from __future__ import print_function
 from pylab import *
 from sys import *
 from UCNToolsLib import *
-
-
+from time import *
 
 #Temporary Variables
 binary = "./a.out"
@@ -23,15 +22,17 @@ lifetimes = ["50.00","25.00","16.66","12.50"]
 
 #Other parameters
 sd2layers = [1]
-DET = [2,1]
+DET = [1,2,3]
 totalout = [[],[],[],[]]
 count = 1
+
+tic = time()
 
 for i in range(0,len(meanfreepaths)):
     for j in range(0,len(lifetimes)): #Loop over parameter space
     
-        print("Run {:d} of {:d}.".format(count,len(meanfreepaths)*len(lifetimes)))
-        count += 1
+        #print("Run {:d} of {:d}.".format(count,len(meanfreepaths)*len(lifetimes)))
+        print("Run {:d}.{:d}.".format(i+1,j+1))
     
         output = zeros(len(DET)+1)
 
@@ -48,17 +49,28 @@ for i in range(0,len(meanfreepaths)):
             output[ijkl] = output[ijkl]/5.
 
         totalout[i].append(output)
+        toc = time()
+        elapsedtime = (toc - tic)/3600.
+        estimatedtime = (elapsedtime/count)*(len(meanfreepaths)*len(lifetimes)-count)
+        print("Elapsed Time: {:.2f} hours. Estimated Time Remaining: {:.2f} hours.".format(elapsedtime,estimatedtime))
+        count += 1
 
+file = open("spreadoutput.txt","w")
 for d in range(0,len(DET)+1):
     print("\n\n")
+    file.write("\n\n")
     for i in range(0,len(meanfreepaths)):
         print("")
+        file.write("\n")
         for j in range(0,len(lifetimes)): #construct output
             print(totalout[i][j][d],end=",")
+            file.write(str(totalout[i][j][d]) + ",")
 print("\n")
 
 
 #Change regionfile back
 editRegion(Regionfile,sd2layers,'Scat',"0.04")
 editRegion(Regionfile,sd2layers,'Absorb',"25.0")
+
+print("\a\a\a")
 
