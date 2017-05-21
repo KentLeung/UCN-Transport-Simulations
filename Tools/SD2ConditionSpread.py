@@ -2,7 +2,7 @@
 #python SD2ConditionSpread.py binary directory regionfile
 from __future__ import print_function
 
-from pylab import *
+#from pylab import *
 from sys import *
 from UCNToolsLib import *
 from time import *
