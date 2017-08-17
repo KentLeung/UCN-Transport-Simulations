@@ -105,7 +105,9 @@ def editHandling(file,regs,code): #adds or modifies special handling codes in co
             raw[i][0] = raw[i][0].split(',')[0] + "," + sCodes[i]
 
     for i in raw[:-1]:
-        lines.append("{:12s}{:46s}{:s}\n".format(i[0],i[1],i[2]))
+        if len(i) == 2: lines.append("{:12s}{:46s}\n".format(i[0],i[1]))
+        elif len(i) == 3: lines.append("{:12s}{:46s}{:s}\n".format(i[0],i[1],i[2]))
+        elif len(i) == 4: lines.append("{:12s}{:46s}{:46s}{:s}\n".format(i[0],i[1],i[2],i[3]))
 
     lines.append("{:12s}{:s}".format(raw[-1][0],raw[-1][1]))
 
@@ -241,7 +243,11 @@ def plotLayersSpectral(baseline,eventsfiles,plottype,nbins,normalized,dataPrint 
 def simRun(binary,directory,detectors=[1,2,3,4,5,6,7,8,9,10]):
     sim = Popen(binary + " " + directory, shell=True, stdout=PIPE)
     output, error = sim.communicate()
-    uloss = [int(i) for i in findall("\d", findall("\(\d*\) of the particles",output)[0])]
+    uloss = [int(i) for i in findall("\d", findall("\% \(\d*\) of the particles",output)[0])]
+    if len(uloss) != 1:
+        lossstr = ""
+        for i in uloss: lossstr += str(i)
+        uloss = [int(lossstr)]
     dets = [int(i[1]) for i in [findall("\d+",i) for i in findall("Detector \d* -> \d*",output)]]
     return [dets[i-1] for i in detectors] + uloss
 

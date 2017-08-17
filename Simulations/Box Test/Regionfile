@@ -1,0 +1,4 @@
+Reg#  RType  BP(x,y,z)           Dim[m]          Orient          Grad B [T/m]  Spec   Loss    Depol   WPot[neV]  BPot[neV]  Scat   Absorb[1/s]   Det  PM  SM  LM  DM
+0     1      0.0,0.0,0.0         1.,1.,2.         0.0,0.0,0.0     0.0,0.0,0.0   0.600  5.0e-4  1.0e-6  335.0      0.00       0.0    0.000         1    1   0   0   0
+1     1      *                   1.,1.,3.         0.0,0.0,0.0     0.0,0.0,0.0   0.600  5.0e-4  1.0e-6  335.0      0.00       0.0    4.0           1    1   0   0   0
+/

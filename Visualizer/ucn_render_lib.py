@@ -20,10 +20,10 @@ def draw_geom(regions):
       #[1] basepoint is anything else: This three-vector is the new basepoint.
       if not (i[2]==-1 and i[3]==-1 and i[4]==-1):
         endplate = vector(i[2],i[3],i[4])
-      piece = box(pos = endplate+direction*i[5]/2, axis = direction, 
-                  length = i[5], width = i[6], height = i[7], 
+      piece = box(pos = endplate+direction*i[7]/2, axis = direction,
+                  width = i[5], height = i[6], length = i[7],
                   color = color.white, opacity = .2);
-      endplate = piece.pos+piece.axis*piece.length/2;
+      endplate = piece.pos+(piece.axis/piece.axis.mag)*piece.length/2;
     elif i[1]==2: #Cylinder
       direction = rotate(vector(0,0,1),radians(i[7]),vector(0,1,0));
       xaxis = rotate(vector(1,0,0), radians(i[7]), axis = vector(0,1,0));

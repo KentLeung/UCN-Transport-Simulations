@@ -18,7 +18,7 @@ Regionfile = "Regionfile"
 
 #parameters to vary over
 meanfreepaths = ["0.01","0.02","0.03","0.04"]
-lifetimes = ["50.00","25.00","16.66","12.50"]
+lifetimes = ["0.0"]
 
 #Other parameters
 sd2layers = [1]

@@ -19,9 +19,9 @@
 #define REGFILE "Regionfile"  //The name of the 'regions' file to be read.
 #define CONFILE "Connexfile"  //The name of the 'connex' file to be read.
 #define RSEED "RAND"  //Random seed for the random number generator, which should be an unsigned integer or "RAND" if a new seed is desired each simulation
-#define MZERO 1e-10  //The zero boundary value used in 'mathzero' to control roundoff error.
+#define MZERO 1e-15  //The zero boundary value used in 'mathzero' to control roundoff error.
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
-#define GZERO 1e-7  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
+#define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
 #define VCUTOFF 5.0  //Cut-off speed for a v^2 dv speed dsitribution.
 #define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
@@ -437,7 +437,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         timeestimate = (int)((timeelapsed/n)*(N-n)/60);
         printf("Creating neutron %d. Approximately %d minutes remaining.\n",neutron.num,timeestimate);
     }
-    poof(0,grn()*0.4,0,1); //Create the particle.
+    poof(0,0,0,1); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   

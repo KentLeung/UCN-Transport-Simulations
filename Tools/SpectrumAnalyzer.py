@@ -1,5 +1,5 @@
 #Plotter for particle energy spectra
-#to run: python SpectrumAnalyzer.py initialevents.sim events.sim events.sim ...
+#to run: python SpectrumAnalyzer.py initialevents.sim (comparator.sim) events.sim events.sim ...
 
 from pylab import *
 import sys
@@ -8,6 +8,8 @@ nev2J = 1.602177e-28
 nMASS = 1.67493e-27
 vcutoff = (0.5)*nMASS*(8**2)/nev2J
 
+colordict = {1:'b',2:'g',3:'c',4:'y',5:'m',6:'r'}
+colorindex = 1
 
 def dataGrab(directory):
     #grab events.sim file
@@ -59,8 +61,8 @@ def plotDistBaseline((poofs,cphits,detid),plottype,nbins):
         for i in range(0,len(binsinitial)-1):
             bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
         
-        plot(bins1,n1*100,linewidth=3,color='k',ls='-')
-        plot(bins2,n2*100,linewidth=3,color='k',ls='--')
+        plot(bins1,n1,linewidth=3,color='k',ls='-')
+        plot(bins2,n2,linewidth=3,color='k',ls='--')
 
     if plottype == "angular":
         n1, binsinitial, patches = hist([i[3] for i in poofs],nbins,normed=normalized)
@@ -75,8 +77,8 @@ def plotDistBaseline((poofs,cphits,detid),plottype,nbins):
         for i in range(0,len(binsinitial)-1):
             bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
         
-        plot(bins1,n1*100,linewidth=3,color='k',ls='-')
-        plot(bins2,n2*100,linewidth=3,color='k',ls='--')
+        plot(bins1,n1,linewidth=3,color='k',ls='-')
+        plot(bins2,n2,linewidth=3,color='k',ls='--')
 
     if dataPrint == "ON":
         print "\nBaseline Initial"
@@ -86,23 +88,49 @@ def plotDistBaseline((poofs,cphits,detid),plottype,nbins):
         for i in range(0,len(bins2)):
             print bins2[i],n2[i]
 
-
-def plotDist((poofs,cphits,detid),plottype,nbins):
+def plotDistComparator((poofs,cphits,detid),plottype,nbins):
     if plottype == "energy":
         n2, binsinitial, patches = hist([i[2] for i in cphits[detid[detid.keys()[-1]]]],nbins,normed=normalized,alpha=0)
         bins2 = []
         for i in range(0,len(binsinitial)-1):
             bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
         
-        plot(bins2,n2*100,'-')
+        plot(bins2,n2,linewidth=3,color='r',ls=':')
     
     if plottype == "angular":
-        n2, binsinitial, patches = hist([i[3] for i in cphits[detid[detid.keys()[-1]]]],nbins,normed=normalized)
+        n2, binsinitial, patches = hist([i[3] for i in cphits[detid[detid.keys()[-1]]]],nbins,normed=normalized,alpha=0)
         bins2 = []
         for i in range(0,len(binsinitial)-1):
             bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
         
-        plot(bins2,n2*100,'-')
+        plot(bins2,n2,linewidth=3,color='r',ls=':')
+
+    if dataPrint == "ON":
+        for i in range(0,len(bins2)):
+            print bins2[i],n2[i]
+
+
+def plotDist((poofs,cphits,detid),plottype,nbins):
+
+    global colorindex
+    
+    if plottype == "energy":
+        n2, binsinitial, patches = hist([i[2] for i in cphits[detid[detid.keys()[-1]]]],nbins,normed=normalized,alpha=0)
+        bins2 = []
+        for i in range(0,len(binsinitial)-1):
+            bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
+        
+        plot(bins2,n2,color=colordict[colorindex],ls='-')
+        colorindex += 1
+    
+    if plottype == "angular":
+        n2, binsinitial, patches = hist([i[3] for i in cphits[detid[detid.keys()[-1]]]],nbins,normed=normalized,alpha=0)
+        bins2 = []
+        for i in range(0,len(binsinitial)-1):
+            bins2.append((1./2.)*(binsinitial[i+1]-binsinitial[i])+binsinitial[i])
+        
+        plot(bins2,n2,color=colordict[colorindex],ls='-')
+        colorindex += 1
 
     if dataPrint == "ON":
         for i in range(0,len(bins2)):
@@ -113,27 +141,45 @@ def plotDist((poofs,cphits,detid),plottype,nbins):
 plottype = "energy"
 nbins = 30
 dataPrint = "OFF"
-normalized = False
+normalized = True
+comparator = True
 
 close()
 
 plotDistBaseline(dataGrab(sys.argv[1]),plottype,nbins)
-for file in sys.argv[2:]:
-    if dataPrint == "ON":
-        print "\n{:s}".format(file)
-    plotDist(dataGrab(file),plottype,nbins)
 
-ylabel("Frequency (%)")
+if comparator:
+    if dataPrint == "ON":
+        print "\n{:s}".format(sys.argv[2])
+    plotDistComparator(dataGrab(sys.argv[2]),plottype,nbins)
+
+    for file in sys.argv[3:]:
+        if dataPrint == "ON":
+            print "\n{:s}".format(file)
+        plotDist(dataGrab(file),plottype,nbins)
+else:
+    for file in sys.argv[2:]:
+        if dataPrint == "ON":
+            print "\n{:s}".format(file)
+        plotDist(dataGrab(file),plottype,nbins)
+
+ylabel("Frequency")
 
 if plottype == "energy":
     xlabel("Energy (neV)")
     title("Energy Distribution")
-    legend(["Baseline Initial","Baseline Final","5 Layers","10 Layers","15 Layers","20 Layers"],loc=2)
+    if comparator:
+        legend(["Baseline Initial","Baseline Final","Single Interface","5 Layers","10 Layers","15 Layers","20 Layers"],loc=2)
+    else:
+        legend(["Baseline Initial","Baseline Final","5 Layers","10 Layers","15 Layers","20 Layers"],loc=2)
 
 
 if plottype == "angular":
     xlabel("Energy Directed Downstream (neV)")
     title("Angular Distribution")
-    legend(["Baseline Initial","Baseline Final","5 Layers","10 Layers","15 Layers","20 Layers"],loc=1)
+    if comparator:
+        legend(["Baseline Initial","Baseline Final","Single Interface","5 Layers","10 Layers","15 Layers","20 Layers"],loc=1)
+    else:
+        legend(["Baseline Initial","Baseline Final","5 Layers","10 Layers","15 Layers","20 Layers"],loc=1)
 
 show()

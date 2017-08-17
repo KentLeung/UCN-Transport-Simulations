@@ -6,6 +6,7 @@ from __future__ import print_function
 from sys import *
 from UCNToolsLib import *
 from time import *
+import numpy
 
 #Temporary Variables
 binary = "./a.out"
@@ -17,18 +18,22 @@ Regionfile = "Regionfile"
 #Regionfile = argv[3]
 
 #parameters to vary over
-label1 = 'Scat'
-param1 = ["0.01","0.02","0.03","0.04"]
+label1 = 'Spec'
+param1 = ["0.0","0.5","0.97"]
 label2 = 'Absorb'
-param2 = ["50.00","25.00","16.66","12.50"]
+param2 = ["0.287"]
 
 #Other parameters
-regs = [1]
-DET = [1,2,3]
+regs = [8]
+DET = [1,2,3,4]
 totalout = [[] for i in param1]
 count = 1
+numofruns = 10
 
 tic = time()
+storage = []
+stddeviation = []
+stedevTemp = []
 
 for i in range(0,len(param1)):
     for j in range(0,len(param2)): #Loop over parameter space
@@ -43,12 +48,17 @@ for i in range(0,len(param1)):
         editRegion(Regionfile,regs,label2,param2[j])
 
         #run simulation
-        for ij in range(0,5):
+        for run in range(0,numofruns):
             tempoutput = simRun(binary,directory,DET)
-            for ijk in range(0,len(output)):
-                output[ijk] += tempoutput[ijk]
-        for ijkl in range(0,len(output)):
-            output[ijkl] = output[ijkl]/5.
+            storage.append(tempoutput)
+            for det in range(0,len(output)):
+                output[det] += tempoutput[det]
+        for average in range(0,len(output)):
+            output[average] = output[average]/float(numofruns)
+        for stddev in range(0,len(output)):
+            stedevTemp.append(numpy.std([row[stddev] for row in storage],ddof=1))
+        stddeviation.append(stedevTemp)
+
 
         totalout[i].append(output)
         toc = time()
@@ -56,23 +66,41 @@ for i in range(0,len(param1)):
         estimatedtime = (elapsedtime/count)*(len(param1)*len(param2)-count)
         print("Elapsed Time: {:.2f} hours. Estimated Time Remaining: {:.2f} hours.".format(elapsedtime,estimatedtime))
         count += 1
+        storage = []
+        stedevTemp = []
+
+print("\n\n")
 
 file = open("spreadoutput.txt","w")
-for d in range(0,len(DET)+1):
-    print("\n\n")
-    file.write("\n\n")
-    for i in range(0,len(param1)):
-        print("")
-        file.write("\n")
-        for j in range(0,len(param2)): #construct output
-            print(totalout[i][j][d],end=",")
-            file.write(str(totalout[i][j][d]) + ",")
+
+for condition in totalout:
+    string = ""
+    for det in condition[0]:
+        string += "{:f},".format(det)
+    string = string[:-1]
+    print(string)
+    file.write(string)
+    file.write("\n")
+
 print("\n")
+file.write("\n")
+
+for condition in stddeviation:
+    string = ""
+    for det in condition:
+        string += "{:f},".format(det)
+    string = string[:-1]
+    print(string)
+    file.write(string)
+    file.write("\n")
+
+
+file.close()
 
 
 #Change regionfile back
-editRegion(Regionfile,regs,label1,"0.04")
-editRegion(Regionfile,regs,label2,"25.0")
+editRegion(Regionfile,regs,label1,"0.97")
+editRegion(Regionfile,regs,label2,"0.287")
 
 print("\a\a\a")
 
