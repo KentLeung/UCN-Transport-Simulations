@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Running Parameters
-#define N 1000  //The number of particles to propagate through the geometry.
+#define N 10000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
@@ -22,7 +22,7 @@
 #define MZERO 1e-15  //The zero boundary value used in 'mathzero' to control roundoff error.
 #define TZERO 1e-9  //The zero boundary value used in 'timezero' to control roundoff error.
 #define GZERO 1e-9  //The zero boundary value used in 'move' to check for correct intersections-- essentially the fuzziness of the geometry.
-#define VCUTOFF 5.0  //Cut-off speed for a v^2 dv speed dsitribution.
+#define VCUTOFF 8.0  //Cut-off speed for a v^2 dv speed dsitribution.
 #define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
 #define SHUTTERTIME 0 //Time when the shutter opens.
@@ -437,7 +437,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         timeestimate = (int)((timeelapsed/n)*(N-n)/60);
         printf("Creating neutron %d. Approximately %d minutes remaining.\n",neutron.num,timeestimate);
     }
-    poof(0,0,0,1); //Create the particle.
+    poof(0,grn()*0.4,0,1); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -2524,9 +2524,17 @@ int cplanehandling(void) {
                                                            //cut-plane's region (or is passing through a T-juntion).
   
   if(icpcode == 1) {  //Cut-plane is connecting a box region and a cylinder region. Note that if no lip is encountered, code passes on to check for special-handling.
-    bpx = basepoints[neutron.xcode][0];
-    bpy = basepoints[neutron.xcode][1];
-    bpz = basepoints[neutron.xcode][2];
+    if (neutron.region != neutron.xcode) {
+        bpx = basepoints[regf][0];
+        bpy = basepoints[regf][1];
+        bpz = basepoints[regf][2];
+        }
+    if (neutron.region == neutron.xcode) {
+        bpx = basepoints[regf][0];
+        bpy = basepoints[regf][1];
+        bpz = basepoints[regf][2] + regions[regf][2]; // VERY UNROBUST! only works with cylinders pointed directly in the z direction. Otherwise the math breaks
+                                                     // didnt feel like figuring out Euler angles just yet.
+        }
     psir = cplanes[neutron.xcode][7];
     thetar = cplanes[neutron.xcode][0];
     phir = cplanes[neutron.xcode][1];
