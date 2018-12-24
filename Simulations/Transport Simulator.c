@@ -9,11 +9,11 @@
 #include <time.h>
 
 //Running Parameters
-#define N 10000  //The number of particles to propagate through the geometry.
+#define N 2500000  //The number of particles to propagate through the geometry.
 #define BATCH "OFF"  //Flag to turn batch mode on and off.
 #define CHECK "OFF" //Flag to control whether detailed information on intermediate solutions etc. is displayed.
 #define CONSOLE "ON"  //Flag to control whether WARNINGS and ERRORS are displayed in the console ("ON") or only ERRORS ("OFF").
-#define EVENTS "ON"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
+#define EVENTS "OFF"  //Flag to control whether all events (ON) or just some events (currently only detector and trajectory events) are written to file.
 #define TRAJFLAG "OFF"  //Flag to indicate whether or not to record detailed trajectory information.
 #define TRAJTS .001  //How often to record a trajectory point (in seconds).
 #define REGFILE "Regionfile"  //The name of the 'regions' file to be read.
@@ -26,6 +26,8 @@
 #define MONOENERGY 5.0 //Speed for a monoenergetic energy distribution
 #define BEAMTIME 0 //Number of seconds that neutrons are being produced.
 #define SHUTTERTIME 0 //Time when the shutter opens.
+#define DETCUTOFF 0 //maximum speed at which a neutron can be detected for specified detector below. No cutoff if set to zero
+#define CUTOFFREG 0 //region for which speed cutoff is implemented
 
 //Constants
 #define nMASS 1.67493e-27 //neutron mass in [kg]
@@ -50,7 +52,7 @@ double basepoints[100][3]; //Holds each region's basepoint. The component [regio
                          //0 -> bpx ; 1 -> bpy ; 2 -> bpz.
 double cplanes[100][8]; //Holds the orientation information for each cut-plane. A cut-plane with theta=0 and phi=0 is defined to be perpendicular to the z-axis.
                       //The component [region# associated with cut-plane][#] is assigned as follows:
-                     //0 -> theta orientation of cut-plane [RADIANS] ; 1 -> phi orientation [RADIANS] ; 2 -> special handling code ; 3 -> Special-handling code 2
+                     //0 -> theta orientation of cut-plane [RADIANS] ; 1 -> phi orientation [RADIANS] ; 2 -> special handling code ; 3 -> Special-handling code 2,7
                     //value ; 4 -> internal special handling code ; 5 -> T Cut-plane offset ; 6 -> Region-shift Flag ; 7 -> psi orientation [RADIANS]
                    //T-junc. intersection codes: 0 -> Region has not been changed
                   //                            -1 -> Region has been shrunk.
@@ -237,15 +239,13 @@ void event(int,double,double,double,double); //Function to write an event into t
                            //                               16 => Intersection with a T-junction.
                           //                                17 => Particle scattered inside a bulk medium.
 						  //								18 => Detection of a particle by a cut-plane
-                         //                                 19 => Particle lost unphysically, same as -1: added unnecessarily but now used in the visualizer code so dont delete
-                        //                                  20 => Particle interacted with a cutplane with defined surface roughness
+                          //                                19 => Particle bounced off a cutplane with Fermi Gradient
+                        //                                  20 => Particle penetrated a cutplane with Fermi Gradient
                          //
                         //The subsequent arguments allow data to be passed to 'event'. The type of data will depend on the event code.
 
-void perturbednormal(double *nx,double *ny,double *nz); //finds a normal vector and then perturbs it so as to simulate surface roughness, created by Erik Lutz
-
-void cprandperturb(void); //function to randomly perturb a particles trajectory after an intersection with a cutplane, used to simulate surface roughness, created by Erik Lutz
-
+int perturbednormal(double *nx,double *ny,double *nz); //finds a normal vector and then perturbs it so as to simulate surface roughness, created by Erik Lutz
+                                                      //returns and integer indicating the model used
 
 struct particle {  //This structure holds all the dynamical information about a particular particle.
   double t; //time
@@ -437,7 +437,7 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         timeestimate = (int)((timeelapsed/n)*(N-n)/60);
         printf("Creating neutron %d. Approximately %d minutes remaining.\n",neutron.num,timeestimate);
     }
-    poof(0,grn()*0.4,0,1); //Create the particle.
+    poof(1,grn()*0.039,0,0); //Create the particle.
     //neutron.region = 0;  neutron.vz = 1.5;  neutron.vx = 0.;  neutron.vy = 0.;  neutron.x = 0.;  neutron.y = 0.;  neutron.z = 0.05;
 
   
@@ -458,11 +458,11 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
       ecode = propagate(); //Propagate the particle to its next intersection.
       if(ecode == -1) {  //This particle encountered an error during propagation so abandon it and move on to the next particle.
         lost++; //Increment the lost particle counter.
-        if(EVENTS == "ON") event(19,0,0,0,0);
         break;
       }
       if(ecode == 8 || ecode == 11) break; //Particle was lost through a physical mechanism... move on to the next particle.
       if(ecode == 9) {  //Particle was absorbed in a detector region.
+        if(DETCUTOFF > 0 && neutron.region == CUTOFFREG && sqrt(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2)) > DETCUTOFF) break;
         counts[(int)rparams[neutron.region][10]-1]++; //Increment the integrated counts for the appropriate detector.
         for(i = 0 ; i < 5000 ; i++) {  //Find the correct bin to increment.
           if(neutron.t >= i/10. && neutron.t < (i+1.)/10.) detectors[i][(int)rparams[neutron.region][10]-1]++; //Increment the bin for the region's detector number.
@@ -478,9 +478,16 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
           }
         //if (CONSOLE == "ON" && reinteract != 0) printf("Particle re-interacted with rough surface %d times.\n",reinteract);
         if(cpcode == 1) break; //The particle was lost due to physical interactions so move on to the next particle.
+        if(cpcode == 9) { //Particle was absorbed in a detector region.
+            if(DETCUTOFF > 0 && neutron.region == CUTOFFREG && sqrt(pow(neutron.vx,2)+pow(neutron.vy,2)+pow(neutron.vz,2)) > DETCUTOFF) break;
+            counts[(int)rparams[neutron.xcode][10]-1]++; //Increment the integrated counts for the appropriate detector.
+            for(i = 0 ; i < 5000 ; i++) {  //Find the correct bin to increment.
+              if(neutron.t >= i/10. && neutron.t < (i+1.)/10.) detectors[i][(int)rparams[neutron.xcode][10]-1]++; //Increment the bin for the region's detector number.
+            }
+            break;
+        }
         if(cpcode == -1) {  //The particle was lost unphysically.
           lost++; //Increment the lost particle counter.
-          if(EVENTS == "ON") event(19,0,0,0,0);
           break; //Move on to the next particle.
         }
       }
@@ -489,7 +496,6 @@ int simexec(char *eventsfn,char *detectorsfn,int *counts) {
         bcode = bounce(neutron.region,rparams[neutron.region][6],1,0,0,0); //Bounce the particle using models/values and wall potential of current region.
         if(bcode == -1) {  //Particle was lost unphysically.
           lost++; //Increment the lost particle counter.
-          if(EVENTS == "ON") event(19,0,0,0,0);
           break; //Abandon the particle.
         }
         if(bcode == 1 || bcode == 2) break; //Particle was lost physically, so move on to the next particle.
@@ -1703,7 +1709,10 @@ int loss(int parareg, double mpot, double passnx, double passny, double passnz) 
 
   if(mpot < 0) {
   	ReflCoeff = pow((sqrt(Eperp)-sqrt(Eperp-mpot*neV2J)),2)/pow((sqrt(Eperp)+sqrt(Eperp-mpot*neV2J)),2); //Reflection Coefficient from Golub's calculation.
-	if(grn() > ReflCoeff) return 1;
+	if(grn() > ReflCoeff) {
+        if(EVENTS == "ON") event(13,Eperp,mpot,0,0);
+        return 1;
+	}
 	else return 0;
 	}
   if(Eperp > mpot*neV2J) {
@@ -1721,7 +1730,7 @@ int loss(int parareg, double mpot, double passnx, double passny, double passnz) 
   if((int)rparams[parareg][13] == 0) {  //Determination of loss using a fixed probability of loss from mechanisms other than wall penetration.
 //    if(grn() < rparams[parareg][4]) {  //Random value is less than the probability of loss on a single bounce.
 	  if(superflag != 1){
-	  if(grn() < (rparams[parareg][4]*2*fabs(vperp)/(sqrt(2*mpot*neV2J/nMASS)))) { //Ignatovich Wall Loss Formula (G. Palmquist)
+	  if(grn() < (rparams[parareg][4]*2*fabs(vperp)/(sqrt(2*mpot*neV2J/nMASS - pow(vperp,2))))) { //Ignatovich Wall Loss Formula (G. Palmquist)
       if(EVENTS == "ON") event(7,0,0,0,0);
       return 2; //Particle is lost to the wall.
       }
@@ -2296,7 +2305,7 @@ int move(double dt, double traj[3][3], int gcheck) {
     //the "overhang" won't be larger than the diameter of the tube.
     if(ssz < -regions[neutron.region][2] - regions[neutron.region][1] || ssz > regions[neutron.region][2] + regions[neutron.region][1]) {  //Neutron has escaped
                                                                                                                                            //through a cut-plane.
-      if(CONSOLE == "ON") printf("+WARNING: Particle number %d escaped through a cut-plane! [ssz = %e | region = %d]\n",neutron.num,ssz,neutron.region);
+      if(CONSOLE == "ON") printf("+WARNING: Particle number %d escaped through a cut-plane! [ssz = %e | maxssz = %e | region = %d]\n",neutron.num,ssz,regions[neutron.region][2] + regions[neutron.region][1],neutron.region);
       event(-1,0,0,0,0);
       return -1;
     }
@@ -2509,6 +2518,10 @@ int cplanehandling(void) {
   double passnx,passny,passnz;
   double vninitial, vnfinal, vyi,vzi,vyf,vzf,nx,ny,nz,nxperturb,nyperturb,nzperturb;
   int cyclecount;
+  int i;
+  double vnlocalinital,vnlocalfinal;
+  int roughnessmodel, passthroughregf;
+  double passthroughx,passthroughy,passthroughz,passthroughthickness;
   
   if(neutron.xcode < 0) {  //Current intersection is with a region or there is no current intersection.
     printf("+ERROR: 'cplanehandling' called without a cut-plane intersection! Particle number %d abandoned!\n",neutron.num);
@@ -2575,7 +2588,8 @@ int cplanehandling(void) {
   }
   
   if(cpcode == 1) {  //Cut-plane is 100% absorptive.
-    if(EVENTS == "ON") event(8,0,0,0,0); //Log an event.  
+    if(EVENTS == "ON") event(8,0,0,0,0); //Log an event.
+    if((int)rparams[neutron.xcode][10] != 0) return 9; // if region is defined to be a detector, log a detector event
     return 1; //Return the physical loss code so that the particle will be dropped.
   }
 
@@ -2688,9 +2702,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       if(CONSOLE == "ON") printf("Particle lost unphysically on an aperature cutplane");
       return -1;
     }
-    
-    //printf("Got through the sevener! cpcode = %d.\n", cpcode);
-    
+      
   }
   
   if (cpcode == 6) { //The cutplane should behave just like the walls of its associated region. Made by Erik Lutz
@@ -2703,6 +2715,20 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
     if(bcheck == 0) return 0; //The particle bounced off the lip and has been given a new bounced velocity. Note that no further special handling is done.
     if(bcheck == -1) return -1; //An error occurred during the bounce so that the particle has been lost unphysically.
     if(bcheck == 1 || bcheck == 2) return 1; //The particle was lost physically.
+  }
+  
+  if (cpcode == 8) { //cutplane becomes 100% absorptive after neutron passes through it
+    
+    if (cplanes[neutron.region][3] == neutron.num){
+        if(EVENTS == "ON") event(8,0,0,0,0); //Log an event.
+        if((int)rparams[neutron.xcode][10] != 0) return 9; // if region is defined to be a detector, log a detector event
+        return 1; //Return the physical loss code so that the particle will be dropped.
+    }
+    else {
+        cplanes[neutron.region][3] = neutron.num;
+        cpcode = -1;
+    }
+    
   }
 
 
@@ -2726,6 +2752,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       deltakE = (rparams[neutron.region][7] - rparams[regf][7])*neV2J; //The difference in Fermi potential between the region the particle is leaving (defined
                                                                       //at its cut-plane) and the region it is entering (defined at its cut-plane) gives the
                                                                      //required energy shift, i.e deltakE = PEi - PEf
+        
       minusdeltakEneV = -(rparams[neutron.region][7] - rparams[regf][7]);
 
       gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
@@ -2737,11 +2764,10 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
         if (cpcode == 2) {//the surface has a defined roughness
           cyclecount = 0;
           while (vn >= 0) {
-            perturbednormal(&passnx,&passny,&passnz);
+            roughnessmodel = perturbednormal(&passnx,&passny,&passnz);
             gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
                                                                                            //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
                                                                                           //cut-plane's region) so that normal velocity component shifts may be calculated below.
-            //printf("cycling to find suitable velocity.\n");
             cyclecount++;
             if (cyclecount == 1000) {
               if (CONSOLE == "ON") printf("+ERROR: Tried unsuccessfully to find a suitable random normal.\n");
@@ -2764,7 +2790,7 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
           gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vninitial,&vyi,&vzi,0,0,0);
           cyclecount = 0;
           while (vn <= 0) {
-            perturbednormal(&passnx,&passny,&passnz);
+            roughnessmodel = perturbednormal(&passnx,&passny,&passnz);
             gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vn,&vyb,&vzb,passnx,passny,passnz); //Transform the particle's velocity into the bounce system (where, since the intersection
                                                                                            //is with a cut-plane, the +x-axis will be normal to the cut-plane and point into the
                                                                                           //cut-plane's region) so that normal velocity component shifts may be calculated below.
@@ -2786,46 +2812,85 @@ if(cpcode == 4) {  //Cut-plane is a detector that also records angular informati
       
       
       gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
-      //if (cpcode == 2) printf("Velocity before penetration in bounce frame = (%f, %f, %f).\n",vnfinal,vyf,vzf);
-      //normal(&nx,&ny,&nz,passnx,passny,passnz);
-      //if (cpcode == 2) printf("\nPerturbed normal vector = (%f, %f, %f).\n",nx,ny,nz);
-
-      
-      //normal(&nx,&ny,&nz,0,0,0);
-      //normal(&nxperturb,&nyperturb,&nzperturb,passnx,passny,passnz);
-      
-      //if (nyperturb < 0.01) printf("ny = %f, nyperturb = %f. [Part: %d].\n",ny, nyperturb,neutron.num);
 
       
       if(bcheck == 0) { //The particle bounced off the cut-plane and has been given a new bounced velocity.
+        if(EVENTS == "ON") event(19,0,0,0,0);
         if ((vninitial > 0 && vnfinal > 0) || (vninitial < 0 && vnfinal < 0)) { //even though particle is bounced it still goes into next region because of roughness
-          return 2;
+            
+            if (roughnessmodel == 0 || roughnessmodel == 1) { //passthrough's are not allowed so return 2 so that particle will reinteract with surface.
+                return 2;
+            }
+        
+            else if ((roughnessmodel == 2 || roughnessmodel == 3) && rparams[neutron.region][7] == 0.) { //we must pass the particle through the next region
+            
+                passthroughregf = neutron.region + 2*(regf - neutron.region); //define region to pass neutron to
+                if (neutron.region == neutron.xcode) {passthroughthickness = -1*regions[regf][2];} //define thickness of region to pass through
+                else {passthroughthickness = regions[regf][2];}
+                
+                
+                //calculate change in particle position as is travels through pass through region, in bounce frame
+                passthroughx = passthroughthickness;
+                passthroughy = (passthroughthickness/vnfinal)*vyf;
+                passthroughz = (passthroughthickness/vnfinal)*vzf;
+                
+                //transform neutron postion into bounce system
+                xb = neutron.x - basepoints[neutron.xcode][0]; //translate to basepoint
+                yb = neutron.y - basepoints[neutron.xcode][1];
+                zb = neutron.z - basepoints[neutron.xcode][2];
+                gsys2bsys(xb,yb,zb,&xb,&yb,&zb,0,0,0); //transform to bounce frame
+                
+                //move neutron
+                xb += passthroughx;
+                yb += passthroughy;
+                zb += passthroughz;
+                bsys2gsys(xb,yb,zb,&xb,&yb,&zb,0,0,0); //transform to global frame
+                
+                //translate back from basepoint
+                xb += basepoints[neutron.xcode][0];
+                yb += basepoints[neutron.xcode][1];
+                zb += basepoints[neutron.xcode][2];
+                
+                
+                //set neutron position
+                neutron.x = xb;
+                neutron.y = yb;
+                neutron.z = zb;
+                
+                neutron.region = passthroughregf; //set new region
+                
+                return 0;
+
+            }
+            
+        else return 2;
+
         }
         return 0;
       }
       
       if(bcheck == 1) {  //The particle penetrated into the region and so it should be passed through the cut-plane with an energy shift.
+        if(EVENTS == "ON") event(20,0,0,0,0);
         if((2.*deltakE/nMASS + pow(vn,2)) < 0) {  //After the energy shift the particle speed will be imaginary!
           printf("+ERROR: Particle number %d arrived inside a medium with an imaginary velocity component! [Reg: %d, xcode: %d]\n",neutron.num,neutron.region,neutron.xcode);
           return -1; //Abandon the particle.
         }
         
-        //printf("v before boost = (%f, %f, %f). ",vn,vyb,vzb);
+        
+        vnlocalinital = vn;
         vn = vn/fabs(vn)*sqrt(2.*deltakE/nMASS + pow(vn,2)); //Calculate the particle's new normal velocity component.
-        //printf("v after boost = (%f, %f, %f).\n",vn,vyb,vzb);
-
-        //printf("vy before boost = %f. ",neutron.vy);
+        vnlocalfinal = vn;
         bsys2gsys(vn,vyb,vzb,&neutron.vx,&neutron.vy,&neutron.vz,passnx,passny,passnz); //Transform the particle's new velocity back into the global system.
         
         gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
-        if ((vninitial > 0 && vnfinal < 0) || (vninitial < 0 && vnfinal > 0)) {}
+        
+        if ((vninitial > 0 && vnfinal < 0) || (vninitial < 0 && vnfinal > 0)) {
+            neutron.region = regf;
+            return 2;
+        }
+        
         else neutron.region = regf; //Pass the particle through the cut-plane.
 
-        //printf("vy after boost = %f. xcode = %d.\n",neutron.vy,neutron.xcode);
-          
-        //gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnfinal,&vyf,&vzf,0,0,0);
-        //if (cpcode == 2) printf("Velocity after penetration in bounce frame = (%f, %f, %f).\n",vnfinal,vyf,vzf);
-          
         if(EVENTS == "ON") event(15,0,0,0,0); //Log an event.
         return 0;
       }
@@ -3074,139 +3139,53 @@ void event(int eventcode,double data1,double data2,double data3, double data4) {
   return;
 }
 
-void perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
+int perturbednormal(double *nx,double *ny,double *nz){ //created by Erik Lutz
   double inx,iny,inz;
   double surfparamexp, surfparamlin;
   double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
   double thetaf, phif;
+  int modeltype;
     
-  //printf("Perturbed Normal.\n");
-  
   normal(&inx,&iny,&inz,0,0,0);
-  //printf("normal() has returned (%f,%f,%f).\n",inx,iny,inz);
   
   randthetaseed = grn();
   randphiseed = grn();
   
   theta = acos(inx);   //define current inclination angle
   phi = atan2(inz,iny); //define current inclination angle
+    
+  if ((cplanes[neutron.xcode][3] <= 1.) || ((cplanes[neutron.xcode][3] > 2.) && (cplanes[neutron.xcode][3] <= 3.))) { //use exponential model
   
-  surfparamexp = 1.0/cplanes[neutron.xcode][3];    //grab user supplied surface roughness parameter for exponential model
-  surfparamlin = cplanes[neutron.xcode][3]-1.;    //grab user supplied surface roughness parameter for linear model
-  
-  if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
+    if (cplanes[neutron.xcode][3] <= 1.) {surfparamexp = 1.0/cplanes[neutron.xcode][3];}    //grab user supplied surface roughness parameter for exponential model}
+    else {surfparamexp = 1.0/(cplanes[neutron.xcode][3]-2);}
+    
     randtheta = (1./2.)*acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi/2
     randphi = (PI/2.)*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi/2
   }
   
-  if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
+  if (((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) || ((cplanes[neutron.xcode][3] > 3.) && (cplanes[neutron.xcode][3] <= 4.))) { //use linear model
+  
+    if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) {surfparamlin = cplanes[neutron.xcode][3]-1.;}    //grab user supplied surface roughness parameter for linear model
+    else {surfparamlin = cplanes[neutron.xcode][3]-3.;}
+  
     randtheta = (1./2.)*acos(1.-2.*surfparamlin*randthetaseed);
     randphi = (PI/2.)*surfparamlin*randphiseed;
   }
   
-  if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
-  if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
+  if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi/2,Pi/2]
+  if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi/2,Pi/2]
   
-  thetaf = theta + randtheta;
-  phif = phi + randphi;
+  thetaf = theta + 2*randtheta;
+  phif = phi + 2*randphi;
   
   *nx = cos(thetaf);
   *ny = sin(thetaf)*cos(phif);
   *nz = sin(thetaf)*sin(phif);
-  //printf("pertubednormal() has returned (%f,%f,%f).\n",*nx,*ny,*nz);
-}
-
-void cprandperturb(void) { //created by Erik Lutz
-  double v, vnx, vny, vnz;
-  double surfparamexp, surfparamlin;
-  double theta, phi, randthetaseed, randtheta, randphiseed, randphi;
-  double thetaf, phif;
   
-  gsys2bsys(neutron.vx,neutron.vy,neutron.vz,&vnx,&vny,&vnz,0,0,0);
+  if ((cplanes[neutron.xcode][3] > 0.) && (cplanes[neutron.xcode][3] <= 1.)) { return 0;} //exponential model, no pass through
+  else if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { return 1;} //linear model, no pass through
+  else if ((cplanes[neutron.xcode][3] > 2.) && (cplanes[neutron.xcode][3] <= 3.)) { return 2;} //exponential model, pass through
+  else if ((cplanes[neutron.xcode][3] > 3.) && (cplanes[neutron.xcode][3] <= 4.)) { return 3;} // linear model, pass through
   
-  v = sqrt(pow(vnx,2)+pow(vny,2)+pow(vnz,2));
-  
-  randthetaseed = grn();
-  randphiseed = grn();
-  
-  theta = acos(vnx/v);   //define current inclination angle
-  phi = atan2(vnz,vny); //define current inclination angle
-  
-  surfparamexp = 1.0/cplanes[neutron.xcode][3];    //grab user supplied surface roughness parameter for exponential model
-  surfparamlin = cplanes[neutron.xcode][3]-1.;    //grab user supplied surface roughness parameter for linear model
-  
-  if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
-    randtheta = PI*acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
-    randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
-  }
-  
-  if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
-    randtheta = acos(1.-2.*surfparamlin*randthetaseed);
-    randphi = PI*surfparamlin*randphiseed;
-  }
-  
-  if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
-  if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
-  
-  thetaf = theta + randtheta;
-  phif = phi + randphi;
-
-  if (vnx > 0) { //particle is above cut-plane
-    while (cos(thetaf) < 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
-      
-      randthetaseed = grn();
-      randphiseed = grn();
-      
-      //printf("randthetaseed = %f.\n",randthetaseed);
-      
-      if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
-        randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
-        randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
-      }
-      
-      if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
-        randtheta = acos(1.-2.*surfparamlin*randthetaseed);
-        randphi = PI*surfparamlin*randphiseed;
-      }
-      
-      if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
-      if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
-      
-      thetaf = theta + randtheta;
-      phif = phi + randphi;
-
-    }
-  }
-  
-  if (vnx < 0) { //particle is below cut-plane
-    while (cos(thetaf) > 0) { //particle has been perturbed through cut-plane, so choose another random value and try again
-      
-      randthetaseed = grn();
-      randphiseed = grn();
-      
-      if (cplanes[neutron.xcode][3] <= 1.) { //use exponential model
-        randtheta = acos(1.-2.*pow(randthetaseed,surfparamexp));         //generate a weighted random inclination angle seed between 0 and Pi
-        randphi = PI*pow(randphiseed,surfparamexp);          //generate an weighted random azimuthal angle between 0 and Pi
-      }
-      
-      if ((cplanes[neutron.xcode][3] > 1.) && (cplanes[neutron.xcode][3] <= 2.)) { //use linear model
-        randtheta = acos(1.-2.*surfparamlin*randthetaseed);
-        randphi = PI*surfparamlin*randphiseed;
-      }
-      
-      if(grn() < 0.5) randtheta = -randtheta;   //give random theta a random sign, now is a weighted random number in [-Pi,Pi]
-      if(grn() < 0.5) randphi = -randphi;   //give random phi a random sign, now is a weighted random number in [-Pi,Pi]
-      
-      thetaf = theta + randtheta;
-      phif = phi + randphi;
-      
-    }
-  }
-
-  //apply new direction to vector
-  vnx = v*cos(thetaf);
-  vny = v*sin(thetaf)*cos(phif);
-  vnz = v*sin(thetaf)*sin(phif);
-  
-  bsys2gsys(vnx,vny,vnz,&neutron.vx,&neutron.vy,&neutron.vz,0,0,0); //Transform the particle's new direction back into the global system.
+  return -1;
 }

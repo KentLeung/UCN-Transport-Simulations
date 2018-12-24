@@ -18,14 +18,14 @@ Regionfile = "Connexfile"
 #Regionfile = argv[3]
 
 #parameters to vary over
-param1 = ["7(0.005)","7(0.010)","7(0.025)","7(0.050)","7(0.060)"]
+param1 = ["7(0.05)","7(0.06)","7(0.07)","7(0.08)","7(0.09)","7(0.10)","7(0.11)","7(0.12)","7(0.13)","7(0.14)"]
 
 #Other parameters
-regs = [14]
-DET = [1,2,3,4]
+regs = [8]
+DET = [1]
 totalout = [[] for i in param1]
 count = 1
-numofruns = 10
+numofruns = 5
 
 
 tic = time()
@@ -92,7 +92,7 @@ file.close()
 
 
 #Change regionfile back
-editHandling(Regionfile,regs,"7(0.025)")
+editHandling(Regionfile,regs,"7(0.100)")
 
 print("\a\a\a")
 

@@ -125,7 +125,8 @@ Format for 'connex':
                                              1    => Cut-plane is 100% absorptive
                                              2(x) => Cut-plane is modeled with surface roughness. x (0,2] is a parameter passed to cplanes[reg][3] and defines a weighted probability distribution
                                                     for the amount that a particles bounce is deflected by the surface. Amount = grn()^(1/x) for x in (0,1] and Amount = grn()*1/(x-1) for x in [1,2]. x->0
-                                                    will create a totally flat surface and x = 1,2 will create a surface which scatters particles isotropically into a hemisphere above it. (Erik Lutz)
+                                                    will create a totally flat surface and x = 1,2 will create a surface which scatters particles isotropically into a hemisphere above it. There is now functionality for x in (2,3] and (3,4]. These two options match the (0,1] and (1,2] ranges respectively except that, in the case where a particle is reflected from the surface but still continues traveling in the same direction, the particle is passed through the next region so that a frost model will resemble Geza's disc model. (Erik Lutz)
+                                                        NB: the passthrough routine is NOT ROBUST. It only works for vacuum cylindrical regions that are connected consecutively and without bends. Not t's or boxes or curves. This routine was meant to model very thin frost layers. It also only works for a neutron moving from vacuum to bulk, and not the other way around.
                                              3    => Cut-plane represents a spin-flip resonance. Spin-flip efficiencies are defined in the handling routine.
                                              4    => Cut-plane is a monitoring detector (i.e. it doesn't absorb the particle) which records angular distributions.
                                              5    => Cut-plane separates two dissimilar-sized same-type guides where there is a lip.
@@ -133,6 +134,11 @@ Format for 'connex':
                                              6    => Cut-plane acts just like the walls of its associated region.
                                              7(x) => Cut-plane has acts like the walls of its associated region except for a circular aperature in the center with radius x that acts
                                                      as if it has no special handing code. (This function to be used with cylindrical regions, no functionality for box regions yet).
+                                             8    => Cutplane becomes 100% absorbing after neutron passes through it. This was used so that neutrons could be boosted from the bulk
+                                                     SD2 with a roughened surface and then any that bounced back to the bulk would be absorbed immediately.
+                                             9    => we skew the cutplane so that it is not perpendicular to the sides of the region. Skewed in degrees by parameter passed.
+                                                     Applies only to the middle value in the orientation, i.e. if passed parameter is -45 then a region oriented at 0,90,0 would
+                                                     have a cutplane oriented at 0,45,0.
 
 Batch Mode:
   Batch mode is turned on with a flag in the header and allows any number of batches to be run with each batch containing any number of simulation runs. A specified

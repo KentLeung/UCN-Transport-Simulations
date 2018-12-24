@@ -1,0 +1,30 @@
+OUTPUT: (each row is from param1, each column is from param2)
+
+param1: Varied "Spec" over ['1.000']
+param2: Varied "WPot" over['350.0']
+Varied regions:[0]
+Ran each simulation 5 times.
+
+Detector 1 Means
+2674.200000
+
+Detector 1 Standard Deviations
+40.763955
+
+Detector 2 Means
+6730.000000
+
+Detector 2 Standard Deviations
+47.206991
+
+Detector 3 Means
+31.600000
+
+Detector 3 Standard Deviations
+8.473488
+
+Unphysical Loss Means
+2.000000
+
+Unphysical Loss Standard Deviations
+0.707107

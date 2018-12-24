@@ -12,7 +12,7 @@ shape = argv[1]
 SD2BulkPot = '106.0'
 WallPot = '350.0'
 SD2Dim = '0.17,0.03900'
-SD2Spec = '0.500'
+FrostSpec = '1.000'
 WallSpec = '0.970'
 SD2mfp = '0.04'
 SD2absorb = '25.0'
@@ -22,7 +22,7 @@ startDim = '0.17,0.01000'
 SD2Det = '2'
 TransDet = '1'
 FrostDet = '3'
-roughtnesscode = '2(1)'
+roughnesscode = '2(1)'
 
 #vars
 lineTemplate = ['0', '2', '*', '0.0,0.0', '0.0,-90.0,0.0', '0.0,0.0,0.0', '0.0', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0']
@@ -33,19 +33,19 @@ options = {'Reg':0, 'RType':1, 'BP':2, 'Dim':3, 'Orient':4, 'Grad B':5, 'Spec':6
 output = [header]
 if shape == 'straight':
     ending = [['0', '2', '*', '0.17,0.10000', '0.0,-90.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '9999.', '1', '1', '0', '0', '0']]
-    ending[0][0] = str(numoflayers*2+3)
+    ending[0][0] = str(numoflayers*2+4)
 if shape == 'bent':
     ending =[['0', '2', '*', '0.17,0.15000', '0.0,-60.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0'], \
-    ['0', '2', '*', '0.17,0.15000', '0.0,-30.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0'], \
-    ['0', '2', '*', '0.17,0.30000', '0.0,0.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0'], \
-    ['0', '2', '*', '0.17,0.10000', '0.0,0.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '9999.', '1', '1', '0', '0', '0']]
-    ending[0][0] = str(numoflayers*2+3)
-    ending[1][0] = str(numoflayers*2+4)
-    ending[2][0] = str(numoflayers*2+5)
-    ending[3][0] = str(numoflayers*2+6)
+             ['0', '2', '*', '0.17,0.15000', '0.0,-30.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0'], \
+             ['0', '2', '*', '0.17,0.30000', '0.0,0.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '0.0', '0', '0', '0', '0', '0'], \
+             ['0', '2', '*', '0.17,0.10000', '0.0,0.0,0.0', '0.0,0.0,0.0', '0.970', '2.0e-4', '1.0e-6', '350.0', '0.0', '0.0', '9999.', '1', '1', '0', '0', '0']]
+    ending[0][0] = str(numoflayers*2+4)
+    ending[1][0] = str(numoflayers*2+5)
+    ending[2][0] = str(numoflayers*2+6)
+    ending[3][0] = str(numoflayers*2+7)
 
 
-for i in range(0,3+numoflayers*2):
+for i in range(0,4+numoflayers*2):
     line = lineTemplate
     line[0] = str(i)
     output.append(formatRegion(lineTemplate))
@@ -62,13 +62,13 @@ Regfile.close()
 #0th region
 editRegion("Regionfile",[0],'BP','0.0,0.0,0.0')
 editRegion("Regionfile",[0],'Dim',startDim)
-editRegion("Regionfile",[0],'Spec',SD2Spec)
+editRegion("Regionfile",[0],'Spec',FrostSpec)
 editRegion("Regionfile",[0],'BPot',WallPot)
 editRegion("Regionfile",[0],'Absorb','9999.')
 
 #SD2 Crystal Region
 editRegion("Regionfile",[1],'Dim',SD2Dim)
-editRegion("Regionfile",[1],'Spec',SD2Spec)
+editRegion("Regionfile",[1],'Spec',FrostSpec)
 editRegion("Regionfile",[1],'BPot',SD2BulkPot)
 editRegion("Regionfile",[1],'Scat',SD2mfp)
 editRegion("Regionfile",[1],'Absorb',SD2absorb)
@@ -76,18 +76,18 @@ editRegion("Regionfile",[1],'PM','4')
 editRegion("Regionfile",[1],'Det',SD2Det)
 
 #Guide Region
-editRegion("Regionfile",[numoflayers*2+2],'Dim',TravelDim)
-editRegion("Regionfile",[numoflayers*2+2],'Spec',WallSpec)
+editRegion("Regionfile",[numoflayers*2+3],'Dim',TravelDim)
+editRegion("Regionfile",[numoflayers*2+3],'Spec',WallSpec)
 
 #vacuum layers
-for i in range(0,numoflayers):
+for i in range(0,numoflayers+1):
     editRegion("Regionfile",[2+2*i],'Dim',LayerDim)
-    editRegion("Regionfile",[2+2*i],'Spec',WallSpec)
+    editRegion("Regionfile",[2+2*i],'Spec',FrostSpec)
 
 #SD2 layers
 for i in range(0,numoflayers):
     editRegion("Regionfile",[3+2*i],'Dim',LayerDim)
-    editRegion("Regionfile",[3+2*i],'Spec',SD2Spec)
+    editRegion("Regionfile",[3+2*i],'Spec',FrostSpec)
     editRegion("Regionfile",[3+2*i],'Absorb',SD2absorb)
     editRegion("Regionfile",[3+2*i],'Scat',SD2mfp)
     editRegion("Regionfile",[3+2*i],'Det',FrostDet)
@@ -97,16 +97,16 @@ for i in range(0,numoflayers):
 #Connexfile stuff
 
 if shape == 'straight':
-    blankConnex("Connexfile",numoflayers*2 + 3)
+    blankConnex("Connexfile",numoflayers*2 + 4)
     #last line
-    editHandling("Connexfile",[numoflayers*2 + 3],'4')
+    editHandling("Connexfile",[numoflayers*2 + 4],'4')
 
 
 
 if shape == 'bent':
-    blankConnex("Connexfile",numoflayers*2 + 6)
+    blankConnex("Connexfile",numoflayers*2 + 7)
     #last line
-    editHandling("Connexfile",[numoflayers*2 + 6],'4')
+    editHandling("Connexfile",[numoflayers*2 + 7],'4')
 
 
 #first line
@@ -114,14 +114,14 @@ editHandling("Connexfile",[0],'1')
 
 #layers
 for i in range(2,numoflayers*2+3):
-    editHandling("Connexfile",[i],roughtnesscode)
+    editHandling("Connexfile",[i],roughnesscode)
 
 
 #Print info for spectral script use
 if shape == 'straight':
-    print "Detector at region {:d}.".format(numoflayers*2+3)
+    print "Detector at region {:d}.".format(numoflayers*2+4)
 if shape == 'bent':
-    print "Detector at region {:d}.".format(numoflayers*2+6)
+    print "Detector at region {:d}.".format(numoflayers*2+7)
 
 
 

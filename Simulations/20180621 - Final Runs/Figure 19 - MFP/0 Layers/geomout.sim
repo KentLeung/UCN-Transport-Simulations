@@ -1,0 +1,65 @@
+regions:
+
+region# = 0 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.010000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 1 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.039000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 2 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.000010 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 3 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.300000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+region# = 4 | surface type = 2.000000 | Dimx or Diameter = 0.170000 | Dimy or Length = 0.100000 | Dimz = 0.000000 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000
+
+
+basepoints:
+
+region# 0 --> bpx = 0.000000 | bpy = 0.000000 | bpz = 0.000000
+
+region# 1 --> bpx = 0.000000 | bpy = 0.010000 | bpz = -0.000000
+
+region# 2 --> bpx = 0.000000 | bpy = 0.049000 | bpz = -0.000000
+
+region# 3 --> bpx = 0.000000 | bpy = 0.049010 | bpz = -0.000000
+
+region# 4 --> bpx = 0.000000 | bpy = 0.349010 | bpz = -0.000000
+
+
+cplanes:
+
+region # = 0 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 1 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 2 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 2 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 1
+
+region # = 3 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = -1 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+region # = 4 | psi = 0.000000 | theta = -1.570796 | phi = 0.000000 | s.h. code = 4 | int. s.h. code = 0 | T cut-plane offset = 0.000000 | s.h. 2 value = 0
+
+
+rparams:
+
+0.000000|0.000000|-0.000000|1.000000|2.000000e-04|1.000000e-06|350.000000|350.000000|0.000000e+00|9.999000e+03|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|1.000000|2.000000e-04|1.000000e-06|350.000000|106.000000|8.000000e-02|5.000000e+01|2.000000|4.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|1.000000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|0.000000e+00|0.000000|0.000000|0.000000|0.000000|0.000000
+
+0.000000|0.000000|-0.000000|0.970000|2.000000e-04|1.000000e-06|350.000000|0.000000|0.000000e+00|9.999000e+03|1.000000|1.000000|0.000000|0.000000|0.000000
+
+
+connex:
+
+region 0 --> 0 and 1 and -1 and 0 and 0 and 0
+
+region 1 --> 0 and 2 and -1 and 0 and 0 and 0
+
+region 2 --> 1 and 3 and -1 and 0 and 0 and 0
+
+region 3 --> 2 and 4 and -1 and 0 and 0 and 0
+
+region 4 --> 3 and -1 and 0 and 0 and 0 and 0
+
+

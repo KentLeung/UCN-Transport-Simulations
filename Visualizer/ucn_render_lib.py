@@ -1,5 +1,5 @@
 from __future__ import division
-from visual import *
+from vpython import *
 
 ### Draw imported geometry using VPython objects
 def draw_geom(regions):

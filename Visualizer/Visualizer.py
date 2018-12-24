@@ -61,7 +61,7 @@ def eventstotrajectories(filename): #Convert events.sim file to an acceptable tr
 
     #log error particles
     for line in events:
-        if line[1] == 19:
+        if line[1] == -1:
             errors.append(line[0])
             errorpoints.append([line[2], line[3], line[4]])
 

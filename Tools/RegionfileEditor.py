@@ -4,7 +4,7 @@ def format(line):
     a = ""
     a = a + "{:6s}".format(line[0])
     a = a + "{:7s}".format(line[1])
-    a = a + "{:20s}".format(line[2])
+    a = a + "{:25s}".format(line[2])
     a = a + "{:16s}".format(line[3])
     a = a + "{:16s}".format(line[4])
     a = a + "{:14s}".format(line[5])
@@ -28,7 +28,7 @@ file = open(sys.argv[1], "r")
 raw = file.read().splitlines()
 file.close()
 
-header = "Reg#  RType  BP(x,y,z)           Dim[m]          Orient          Grad B [T/m]  Spec   Loss    Depol   WPot[neV]  BPot[neV]  Scat   Absorb[1/s]   Det  PM  SM  LM  DM\n"
+header = "Reg#  RType       BP(x,y,z)           Dim[m]          Orient          Grad B [T/m]  Spec   Loss    Depol   WPot[neV]  BPot[neV]  Scat   Absorb[1/s]   Det  PM  SM  LM  DM\n"
 raw = [i.split() for i in raw[1:-1]]
 options = {'Reg':0, 'RType':1, 'BP':2, 'Dim':3, 'Orient':4, 'Grad B':5, 'Spec':6, 'Loss':7, 'Depol':8, 'WPot':9, 'BPot':10, 'Scat':11, 'Absorb':12, 'Det':13, 'PM':14, 'SM':15, 'LM':16, 'DM':17}
 
